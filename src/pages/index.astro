@@ -107,9 +107,19 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
     ]
   }
   </script>
+  <script is:inline>
+    // Apply a saved theme before first paint to avoid a flash.
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <main>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch colour theme">
+      <span class="dot" aria-hidden="true"></span><span id="theme-label">Dark</span>
+    </button>
     <header class="intro">
       <img src="/avatar.png" alt="" width="64" height="64" class="avatar" />
       <h1>Jayvee Celestial</h1>
@@ -206,15 +216,26 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
       --display: "Red Hat Display", var(--sans);
       --mono: "Red Hat Mono", ui-monospace, monospace;
     }
+    /* Dark palette: follows the device unless the visitor picked a theme. */
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --bg: #161513;
         --ink: #e9e6df;
         --muted: #9a958a;
         --rule: #2e2c28;
         --accent: #f0675c;
+        color-scheme: dark;
       }
     }
+    :root[data-theme="dark"] {
+      --bg: #161513;
+      --ink: #e9e6df;
+      --muted: #9a958a;
+      --rule: #2e2c28;
+      --accent: #f0675c;
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] { color-scheme: light; }
 
     *, *::before, *::after { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
@@ -231,6 +252,31 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
       max-width: 46rem;
       margin: 0 auto;
       padding: 5rem 1.25rem 3rem;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 5rem;
+      right: 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font: 400 0.8125rem/1 var(--mono);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .theme-toggle:hover { color: var(--accent); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .theme-toggle .dot {
+      width: 0.7rem; height: 0.7rem;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      background: linear-gradient(90deg, currentColor 50%, transparent 50%);
     }
 
     a {
@@ -356,6 +402,7 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
 
     @media (max-width: 480px) {
       main { padding-top: 3rem; }
+      .theme-toggle { top: 3rem; }
       .row { flex-direction: column; gap: 0.1rem; }
       .skills { grid-template-columns: 1fr; gap: 0; }
       .skills dd { margin-bottom: 0.75rem; }
@@ -370,6 +417,28 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
         window.location.href = `mailto:${a.dataset.u}@${a.dataset.d}`;
       });
     });
+  </script>
+
+  <script>
+    // Theme button: starts from the device setting; a click overrides it and is remembered.
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    const label = document.getElementById('theme-label');
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const current = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+    const render = () => {
+      const next = current() === 'dark' ? 'Light' : 'Dark';
+      if (label) label.textContent = next;
+      btn?.setAttribute('aria-label', `Switch to ${next.toLowerCase()} theme`);
+    };
+    btn?.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch {}
+      render();
+    });
+    media.addEventListener('change', render);
+    render();
   </script>
 
   <script>
