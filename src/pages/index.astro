@@ -7,11 +7,12 @@ const experience = [
     location: "Riyadh, Saudi Arabia · On-site",
     current: true,
     bullets: [
-      "Designing and managing Control-M workflows orchestrating enterprise job scheduling and cross-platform dependencies across multiple large-scale banking clients.",
-      "Developed LLM-integrated Python workflows using OpenAI API to automate analysis of complex pavement engineering datasets — reducing manual processing time for non-technical colleagues.",
-      "Streamlining containerization workflows by troubleshooting and optimizing developer images for Red Hat OpenShift deployment.",
+      "Designed multi-stage Control-M deployment workflows for staging environments with human approval gates, file-watcher triggers, and per-order condition isolation to support concurrent deployments safely.",
+      "Diagnosed and resolved race conditions, stale conditions, and self-ordering loops in Control-M job flows; fixed SELinux context and agent host misconfigurations during proof-of-concept rollout.",
+      "Developed Bash tooling for deployment payload extraction and approve/deny handling, integrated into automated release workflows across segregated file-transfer zones.",
+      "Debugged and optimized developer container images for Red Hat OpenShift deployment, improving build reliability and deployment speed.",
     ],
-    skills: ["OpenShift", "Kubernetes", "Control-M", "LLM Engineering", "Docker"],
+    skills: ["Control-M", "OpenShift", "Bash", "SELinux", "RHEL", "Docker"],
   },
   {
     company: "IBM Solutions Delivery, Inc.",
@@ -20,11 +21,11 @@ const experience = [
     location: "Quezon City, Philippines · Hybrid",
     current: false,
     bullets: [
-      "Deployed OpenShift ACM and Advanced Cluster Security across 4 clusters for one of the Philippines' leading banks, establishing centralized multi-cluster governance and security posture management.",
-      "Authored ACM governance policies to monitor resource usage and automate cleanup across hundreds of microservice namespaces, reducing manual ops overhead.",
-      "Developed Python and Bash scripts to cross-audit microservice versions between PROD and DR environments across the full microservices estate.",
+      "Deployed OpenShift Advanced Cluster Management (ACM) and Advanced Cluster Security (ACS) to establish centralized policy enforcement, RBAC governance, and security posture management across multiple clusters.",
+      "Authored ACM governance policies in YAML to detect anomalous resource usage and trigger automated lifecycle management of temporary namespaces, reducing manual ops overhead.",
+      "Developed Python and Bash scripts to cross-audit microservice versions between PROD and DR environments, improving release verification accuracy and reducing audit cycle time.",
     ],
-    skills: ["OpenShift ACM", "Red Hat ACS", "Python", "Bash", "Multi-cluster"],
+    skills: ["OpenShift ACM", "Red Hat ACS", "RBAC", "Python", "Bash", "Multi-cluster"],
   },
   {
     company: "IBM Solutions Delivery, Inc.",
@@ -33,30 +34,38 @@ const experience = [
     location: "Quezon City, Philippines · Remote",
     current: false,
     bullets: [
-      "Managed Helm chart deployments and GitOps workflows for one of the Philippines' largest banking clients, supporting a full microservices architecture with zero-downtime releases.",
-      "Built Jenkins declarative pipeline scripts to automate pull request validation, code quality checks, and build-time analytics.",
-      "Provided production support and technical enablement for 300+ project managers, developers, and architects across multiple delivery teams.",
+      "Managed Helm chart deployments and GitOps workflows for large-scale banking clients and external vendors, ensuring zero-downtime releases.",
+      "Built Jenkins declarative pipelines to automate pull request validation, code quality checks, and build-time analytics.",
+      "Delivered technical training and production support to 300+ project managers, developers, and architects across multiple delivery teams.",
     ],
-    skills: ["Helm", "Jenkins", "GitLab CI/CD", "Docker", "Kubernetes", "Banking"],
+    skills: ["Helm", "GitOps", "Jenkins", "GitLab CI/CD", "Kubernetes", "Banking"],
   },
 ];
 
 const projects = [
   {
+    title: "GitOps Kubernetes Homelab",
+    description: "Three-node k3s cluster on Hyper-V managed entirely through GitOps: ArgoCD with self-heal syncing from a private Git repo, ingress-nginx host-based routing, Tailscale-only private access, and Helm-managed PostgreSQL-backed services. Roadmap: Prometheus/Grafana, Longhorn storage, and cert-manager TLS.",
+    stack: ["k3s", "ArgoCD", "Helm", "ingress-nginx", "Tailscale", "PostgreSQL", "Hyper-V"],
+    url: null,
+    github: "https://github.com/jayveecelestial/homelab",
+    status: "Active",
+  },
+  {
+    title: "K8s Log Analyzer — AI Incident Triage",
+    description: "Kubernetes-deployed incident triage service that ingests logs from Loki, receives Alertmanager webhooks, and suggests fixes using retrieval over a runbook knowledge base (CrashLoopBackOff, OOMKilled, ImagePullBackOff). Shipped with a Helm chart, Kubernetes manifests, and a test suite.",
+    stack: ["Python", "FastAPI", "LangChain", "ChromaDB", "Anthropic Claude API", "Loki", "Alertmanager", "Helm"],
+    url: null,
+    github: "https://github.com/jayveecelestial/k8s-log-analyzer",
+    status: "Active",
+  },
+  {
     title: "Debt Tracker",
-    description: "Built a full-stack personal finance web app for OFW debt repayment planning — demonstrating end-to-end delivery: FastAPI backend, PostgreSQL, Docker, and automated CI/CD via GitHub Actions. Avalanche/snowball payoff strategies, multi-currency remittance tracking, and AI-powered debt analysis.",
-    stack: ["FastAPI", "SQLAlchemy", "Jinja2", "PostgreSQL", "Docker", "GitHub Actions"],
+    description: "Full-stack personal finance web app with debt payoff strategies and remittance tracking. Built with FastAPI, SQLAlchemy, and PostgreSQL; containerized with Docker and delivered through a GitHub Actions CI/CD pipeline.",
+    stack: ["FastAPI", "SQLAlchemy", "PostgreSQL", "Docker", "GitHub Actions"],
     url: "https://personal-debt-tracker.fly.dev",
     github: "https://github.com/jayveecelestial/debt-tracker",
     status: "Live",
-  },
-  {
-    title: "K8s Log Analyzer — RAG",
-    description: "RAG-powered Kubernetes incident intelligence system. Queries Loki for pod logs, chunks via sliding window, embeds with OpenAI, retrieves similar past incidents from ChromaDB, and generates structured root cause reports with fix recommendations. FastAPI dashboard, Alertmanager webhook integration, namespace-isolated vector store, and security guardrail layer. Refactoring core pipeline to LangChain for provider-portable LLM orchestration.",
-    stack: ["Python", "FastAPI", "OpenAI API", "LangChain", "ChromaDB", "Loki", "Kubernetes", "Docker", "GitHub Actions"],
-    url: null,
-    github: null,
-    status: "In Progress",
   },
 ];
 
@@ -82,10 +91,13 @@ const services = [
 ];
 
 const certs = [
-  { name: "Red Hat Certified Specialist in OpenShift Automation and Integration (EX380)", issuer: "Red Hat", date: "Nov 2026", expires: "Nov 2029", highlight: true },
-  { name: "Red Hat Certified Technologist in OpenShift (EX180)", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2029", highlight: true },
-  { name: "Red Hat Certified Specialist in OpenShift ACM (EX432)", issuer: "Red Hat", date: "Dec 2025", expires: "Dec 2028", highlight: true },
+  { name: "Red Hat Certified Engineer in OpenShift", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
+  { name: "Red Hat Certified Advanced System Administrator in OpenShift", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
+  { name: "Red Hat Certified Specialist in OpenShift Automation and Integration (EX380)", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
   { name: "Red Hat Certified OpenShift Administrator (EX280)", issuer: "Red Hat", date: "Nov 2025", expires: "Nov 2028", highlight: true },
+  { name: "Red Hat Certified Specialist in OpenShift Advanced Cluster Security (EX430)", issuer: "Red Hat", date: "Jul 2026", expires: "Jul 2029", highlight: true },
+  { name: "Red Hat Certified Specialist in OpenShift Advanced Cluster Management (EX432)", issuer: "Red Hat", date: "Dec 2025", expires: "Dec 2028", highlight: true },
+  { name: "Red Hat Certified Technologist in OpenShift (EX180)", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2029", highlight: true },
   { name: "Red Hat Certified Specialist in Containers (EX188)", issuer: "Red Hat", date: "Mar 2025", expires: "Mar 2028", highlight: true },
   { name: "AWS Certified Cloud Practitioner", issuer: "AWS", date: "Feb 2026", expires: "Feb 2029", highlight: true },
   { name: "Microsoft Certified: Azure AI Fundamentals", issuer: "Microsoft", date: "Dec 2022", expires: null, highlight: false },
@@ -100,12 +112,15 @@ const certs = [
 ];
 
 const skillGroups = [
-  { label: "Container Platforms", items: ["Red Hat OpenShift", "Kubernetes", "Docker", "Podman"] },
-  { label: "Automation & Orchestration", items: ["Control-M", "Ansible", "Terraform", "Helm", "ArgoCD"] },
-  { label: "CI/CD & GitOps", items: ["GitHub Actions", "GitLab CI/CD", "Jenkins"] },
-  { label: "AI / ML", items: ["LLM Engineering", "OpenAI API", "LangChain", "Prompt Engineering", "Cursor IDE"] },
+  { label: "Container Platforms", items: ["Red Hat OpenShift", "Kubernetes", "k3s", "Docker", "Podman"] },
+  { label: "Cluster Management & Security", items: ["OpenShift ACM", "OpenShift ACS", "Multi-cluster Governance", "RBAC", "DevSecOps"] },
+  { label: "CI/CD & GitOps", items: ["ArgoCD", "Helm", "Jenkins", "GitLab CI/CD", "GitHub Actions"] },
+  { label: "Automation & IaC", items: ["Control-M", "Ansible Automation Platform", "Terraform"] },
+  { label: "Linux & Networking", items: ["RHEL", "Ubuntu", "SELinux", "ingress-nginx", "Tailscale", "Hyper-V"] },
+  { label: "Observability", items: ["Loki", "Alertmanager", "Webhook Alerting"] },
   { label: "Languages", items: ["Python", "Bash", "Java"] },
-  { label: "Cloud", items: ["AWS", "Microsoft Azure", "IBM Cloud"] },
+  { label: "Cloud", items: ["AWS", "Microsoft Azure"] },
+  { label: "AI / LLM", items: ["Anthropic Claude API", "OpenAI API", "LangChain", "RAG", "ChromaDB"] },
 ];
 
 const skillIconMap: Record<string, { slug: string; color: string }> = {
@@ -113,7 +128,12 @@ const skillIconMap: Record<string, { slug: string; color: string }> = {
   "Kubernetes":        { slug: "kubernetes",       color: "326CE5" },
   "Docker":            { slug: "docker",           color: "2496ED" },
   "Podman":            { slug: "podman",           color: "892CA0" },
-  "Ansible":           { slug: "ansible",          color: "EE0000" },
+  "k3s":               { slug: "k3s",              color: "FFC61C" },
+  "Ansible Automation Platform": { slug: "ansible", color: "EE0000" },
+  "RHEL":              { slug: "redhat",           color: "EE0000" },
+  "Ubuntu":            { slug: "ubuntu",           color: "E95420" },
+  "Loki":              { slug: "grafana",          color: "F46800" },
+  "Alertmanager":      { slug: "prometheus",       color: "E6522C" },
   "Terraform":         { slug: "terraform",        color: "7B42BC" },
   "Helm":              { slug: "helm",             color: "0F1689" },
   "ArgoCD":            { slug: "argo",             color: "EF7B4D" },
@@ -127,7 +147,6 @@ const skillIconMap: Record<string, { slug: string; color: string }> = {
   "Java":              { slug: "openjdk",          color: "ED8B00" },
   "AWS":               { slug: "amazonaws",        color: "FF9900" },
   "Microsoft Azure":   { slug: "microsoftazure",   color: "0078D4" },
-  "IBM Cloud":         { slug: "ibm",              color: "052FAD" },
 };
 
 function toKebab(title: string): string {
@@ -248,7 +267,7 @@ function toKebab(title: string): string {
         </h2>
         <p class="text-slate-300 text-lg font-medium mb-3">I help startups ship cloud-native infrastructure — without hiring a full-time DevOps team.</p>
         <p class="text-slate-400 max-w-2xl text-base leading-relaxed mb-8">
-          4+ years shipping production infrastructure at IBM and eMcREY. I work with startups remotely on DevOps setup, Kubernetes/OpenShift deployments, CI/CD pipelines, and LLM workflow automation. Red Hat certified. Available now for project-based or hourly engagements.
+          4+ years shipping production infrastructure at IBM and eMcREY. I work with startups remotely on DevOps setup, Kubernetes/OpenShift deployments, CI/CD pipelines, and LLM workflow automation. Red Hat Certified Engineer in OpenShift. Available now for project-based or hourly engagements.
         </p>
         <div class="flex flex-wrap gap-3">
           <a href="#contact"
@@ -708,7 +727,7 @@ function toKebab(title: string): string {
     const phrases = [
       'OpenShift & Kubernetes Specialist',
       'LLM Workflow Automation',
-      'Red Hat Certified Engineer',
+      'Red Hat Certified Engineer in OpenShift',
       'Platform Engineering for Startups',
       'CI/CD & GitOps Expert',
     ];
