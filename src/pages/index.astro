@@ -1,157 +1,96 @@
 ---
+const email = { user: "jayveecmacaraeg", domain: "gmail.com" };
+
+const links = [
+  { label: "GitHub", href: "https://github.com/jayveecelestial" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/jayveecelestial/" },
+  { label: "Credly", href: "https://www.credly.com/users/jayvee-celestial/badges" },
+  { label: "CV (PDF)", href: "/Jayvee-Celestial-CV.pdf", download: true },
+];
+
 const experience = [
   {
     company: "eMcREY Limited",
     role: "Senior DevOps Engineer",
-    period: "Sep 2025 – Present",
-    location: "Riyadh, Saudi Arabia · On-site",
-    current: true,
+    period: "2025 – now",
+    location: "Riyadh",
     bullets: [
-      "Designed multi-stage Control-M deployment workflows for staging environments with human approval gates, file-watcher triggers, and per-order condition isolation to support concurrent deployments safely.",
-      "Diagnosed and resolved race conditions, stale conditions, and self-ordering loops in Control-M job flows; fixed SELinux context and agent host misconfigurations during proof-of-concept rollout.",
-      "Developed Bash tooling for deployment payload extraction and approve/deny handling, integrated into automated release workflows across segregated file-transfer zones.",
-      "Debugged and optimized developer container images for Red Hat OpenShift deployment, improving build reliability and deployment speed.",
+      "Designed multi-stage Control-M deployment workflows with human approval gates, file-watcher triggers, and per-order condition isolation so concurrent deployments stay safe.",
+      "Tracked down race conditions, stale conditions, and self-ordering loops in Control-M job flows; fixed SELinux contexts and agent host misconfigurations during the proof of concept.",
+      "Wrote Bash tooling for deployment payload extraction and approve/deny handling across segregated file-transfer zones.",
+      "Debugged and slimmed developer container images for OpenShift, making builds more reliable and deploys faster.",
     ],
-    skills: ["Control-M", "OpenShift", "Bash", "SELinux", "RHEL", "Docker"],
   },
   {
-    company: "IBM Solutions Delivery, Inc.",
+    company: "IBM",
     role: "Platform Engineer",
-    period: "Mar 2024 – Aug 2025",
-    location: "Quezon City, Philippines · Hybrid",
-    current: false,
+    period: "2024 – 2025",
+    location: "Quezon City",
     bullets: [
-      "Deployed OpenShift Advanced Cluster Management (ACM) and Advanced Cluster Security (ACS) to establish centralized policy enforcement, RBAC governance, and security posture management across multiple clusters.",
-      "Authored ACM governance policies in YAML to detect anomalous resource usage and trigger automated lifecycle management of temporary namespaces, reducing manual ops overhead.",
-      "Developed Python and Bash scripts to cross-audit microservice versions between PROD and DR environments, improving release verification accuracy and reducing audit cycle time.",
+      "Rolled out OpenShift ACM and ACS for central policy enforcement, RBAC governance, and security posture across multiple clusters.",
+      "Wrote ACM governance policies that catch anomalous resource usage and clean up temporary namespaces automatically.",
+      "Built Python and Bash scripts that cross-audit microservice versions between PROD and DR.",
     ],
-    skills: ["OpenShift ACM", "Red Hat ACS", "RBAC", "Python", "Bash", "Multi-cluster"],
   },
   {
-    company: "IBM Solutions Delivery, Inc.",
+    company: "IBM",
     role: "DevOps Engineer",
-    period: "Jun 2022 – Mar 2024",
-    location: "Quezon City, Philippines · Remote",
-    current: false,
+    period: "2022 – 2024",
+    location: "Quezon City",
     bullets: [
-      "Managed Helm chart deployments and GitOps workflows for large-scale banking clients and external vendors, ensuring zero-downtime releases.",
-      "Built Jenkins declarative pipelines to automate pull request validation, code quality checks, and build-time analytics.",
-      "Delivered technical training and production support to 300+ project managers, developers, and architects across multiple delivery teams.",
+      "Ran Helm and GitOps deployments for large banking clients and external vendors with zero-downtime releases.",
+      "Built Jenkins declarative pipelines for pull request validation, code quality checks, and build analytics.",
+      "Trained and supported 300+ project managers, developers, and architects.",
     ],
-    skills: ["Helm", "GitOps", "Jenkins", "GitLab CI/CD", "Kubernetes", "Banking"],
   },
 ];
 
 const projects = [
   {
-    title: "GitOps Kubernetes Homelab",
-    description: "Three-node k3s cluster on Hyper-V managed entirely through GitOps: ArgoCD with self-heal syncing from a private Git repo, ingress-nginx host-based routing, Tailscale-only private access, and Helm-managed PostgreSQL-backed services. Roadmap: Prometheus/Grafana, Longhorn storage, and cert-manager TLS.",
-    stack: ["k3s", "ArgoCD", "Helm", "ingress-nginx", "Tailscale", "PostgreSQL", "Hyper-V"],
-    url: null,
-    github: "https://github.com/jayveecelestial/homelab",
-    status: "Active",
+    title: "GitOps homelab",
+    href: "https://github.com/jayveecelestial/homelab",
+    description: "Three-node k3s cluster on Hyper-V, run entirely from Git. ArgoCD with self-heal, ingress-nginx host routing, Tailscale-only access, Helm-managed PostgreSQL services. Next: Prometheus, Longhorn, cert-manager.",
+    stack: "k3s · ArgoCD · Helm · Tailscale",
   },
   {
-    title: "K8s Log Analyzer — AI Incident Triage",
-    description: "Kubernetes-deployed incident triage service that ingests logs from Loki, receives Alertmanager webhooks, and suggests fixes using retrieval over a runbook knowledge base (CrashLoopBackOff, OOMKilled, ImagePullBackOff). Shipped with a Helm chart, Kubernetes manifests, and a test suite.",
-    stack: ["Python", "FastAPI", "LangChain", "ChromaDB", "Anthropic Claude API", "Loki", "Alertmanager", "Helm"],
-    url: null,
-    github: "https://github.com/jayveecelestial/k8s-log-analyzer",
-    status: "Active",
+    title: "K8s log analyzer",
+    href: "https://github.com/jayveecelestial/k8s-log-analyzer",
+    description: "Incident triage service on Kubernetes. Pulls logs from Loki, takes Alertmanager webhooks, and suggests fixes by retrieving from a runbook knowledge base (CrashLoopBackOff, OOMKilled, ImagePullBackOff).",
+    stack: "Python · FastAPI · LangChain · ChromaDB · Claude API",
   },
   {
-    title: "Debt Tracker",
-    description: "Full-stack personal finance web app with debt payoff strategies and remittance tracking. Built with FastAPI, SQLAlchemy, and PostgreSQL; containerized with Docker and delivered through a GitHub Actions CI/CD pipeline.",
-    stack: ["FastAPI", "SQLAlchemy", "PostgreSQL", "Docker", "GitHub Actions"],
-    url: "https://personal-debt-tracker.fly.dev",
-    github: "https://github.com/jayveecelestial/debt-tracker",
-    status: "Live",
-  },
-];
-
-const services = [
-  {
-    path: "~/services/devops",
-    title: "DevOps & Platform Engineering",
-    description: "CI/CD pipelines, Kubernetes and OpenShift deployments, Helm charts, GitOps with ArgoCD, Docker containerization. From zero to production-ready infra.",
-    tags: ["OpenShift", "Kubernetes", "ArgoCD", "Helm", "GitHub Actions"],
-  },
-  {
-    path: "~/services/llm-automation",
-    title: "LLM Workflow Automation",
-    description: "Integrate LLMs into your existing workflows using OpenAI or Anthropic APIs. Automate repetitive analysis, document processing, and decision support — with Python.",
-    tags: ["Python", "OpenAI API", "Anthropic Claude", "Prompt Engineering"],
-  },
-  {
-    path: "~/services/cloud-infra",
-    title: "Cloud Infrastructure",
-    description: "AWS, Azure, and IBM Cloud setup. Container platforms, networking, IAM, and cost optimization. Scalable infra for startups that need to move fast.",
-    tags: ["AWS", "Microsoft Azure", "Terraform", "Ansible"],
+    title: "Debt tracker",
+    href: "https://github.com/jayveecelestial/debt-tracker",
+    live: "https://personal-debt-tracker.fly.dev",
+    description: "Personal finance app with debt payoff strategies and remittance tracking. Containerised and shipped through GitHub Actions.",
+    stack: "FastAPI · PostgreSQL · Docker · GitHub Actions",
   },
 ];
 
 const certs = [
-  { name: "Red Hat Certified Engineer in OpenShift", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
-  { name: "Red Hat Certified Advanced System Administrator in OpenShift", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
-  { name: "Red Hat Certified Specialist in OpenShift Automation and Integration (EX380)", issuer: "Red Hat", date: "Oct 2026", expires: "Oct 2029", highlight: true },
-  { name: "Red Hat Certified OpenShift Administrator (EX280)", issuer: "Red Hat", date: "Nov 2025", expires: "Nov 2028", highlight: true },
-  { name: "Red Hat Certified Specialist in OpenShift Advanced Cluster Security (EX430)", issuer: "Red Hat", date: "Jul 2026", expires: "Jul 2029", highlight: true },
-  { name: "Red Hat Certified Specialist in OpenShift Advanced Cluster Management (EX432)", issuer: "Red Hat", date: "Dec 2025", expires: "Dec 2028", highlight: true },
-  { name: "Red Hat Certified Technologist in OpenShift (EX180)", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2029", highlight: true },
-  { name: "Red Hat Certified Specialist in Containers (EX188)", issuer: "Red Hat", date: "Mar 2025", expires: "Mar 2028", highlight: true },
-  { name: "AWS Certified Cloud Practitioner", issuer: "AWS", date: "Feb 2026", expires: "Feb 2029", highlight: true },
-  { name: "Microsoft Certified: Azure AI Fundamentals", issuer: "Microsoft", date: "Dec 2022", expires: null, highlight: false },
-  { name: "Microsoft Azure Fundamentals", issuer: "Microsoft", date: "Dec 2022", expires: null, highlight: false },
-  { name: "Red Hat Partner Program: Premier", issuer: "Red Hat", date: "Apr 2026", expires: "Dec 2026", highlight: false },
-  { name: "Mission Critical Automation: Technical Seller", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2028", highlight: false },
-  { name: "Application Platform: Technical Seller", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2028", highlight: false },
-  { name: "Container Management: Technical Seller", issuer: "Red Hat", date: "Mar 2026", expires: "Mar 2028", highlight: false },
-  { name: "DevSecOps Essentials", issuer: "IBM", date: "Aug 2022", expires: null, highlight: false },
-  { name: "IT Specialist - Python", issuer: "Certiport", date: "Nov 2021", expires: null, highlight: false },
-  { name: "IT Specialist - Java", issuer: "Certiport", date: "Dec 2021", expires: null, highlight: false },
+  { name: "Red Hat Certified Engineer in OpenShift", date: "2026" },
+  { name: "Red Hat Certified Advanced System Administrator in OpenShift", date: "2026" },
+  { name: "OpenShift Automation and Integration", code: "EX380", date: "2026" },
+  { name: "OpenShift Advanced Cluster Security", code: "EX430", date: "2026" },
+  { name: "OpenShift Advanced Cluster Management", code: "EX432", date: "2025" },
+  { name: "OpenShift Administrator", code: "EX280", date: "2025" },
+  { name: "Technologist in OpenShift", code: "EX180", date: "2026" },
+  { name: "Specialist in Containers", code: "EX188", date: "2025" },
+  { name: "AWS Certified Cloud Practitioner", date: "2026" },
 ];
 
-const skillGroups = [
-  { label: "Container Platforms", items: ["Red Hat OpenShift", "Kubernetes", "k3s", "Docker", "Podman"] },
-  { label: "Cluster Management & Security", items: ["OpenShift ACM", "OpenShift ACS", "Multi-cluster Governance", "RBAC", "DevSecOps"] },
-  { label: "CI/CD & GitOps", items: ["ArgoCD", "Helm", "Jenkins", "GitLab CI/CD", "GitHub Actions"] },
-  { label: "Automation & IaC", items: ["Control-M", "Ansible Automation Platform", "Terraform"] },
-  { label: "Linux & Networking", items: ["RHEL", "Ubuntu", "SELinux", "ingress-nginx", "Tailscale", "Hyper-V"] },
-  { label: "Observability", items: ["Loki", "Alertmanager", "Webhook Alerting"] },
-  { label: "Languages", items: ["Python", "Bash", "Java"] },
-  { label: "Cloud", items: ["AWS", "Microsoft Azure"] },
-  { label: "AI / LLM", items: ["Anthropic Claude API", "OpenAI API", "LangChain", "RAG", "ChromaDB"] },
+const skills = [
+  { label: "Platforms", items: "OpenShift, Kubernetes, k3s, Docker, Podman" },
+  { label: "Cluster ops", items: "ACM, ACS, multi-cluster governance, RBAC" },
+  { label: "Delivery", items: "ArgoCD, Helm, Jenkins, GitLab CI, GitHub Actions" },
+  { label: "Automation", items: "Ansible, Terraform, Control-M" },
+  { label: "Linux", items: "RHEL, Ubuntu, SELinux, ingress-nginx, Tailscale" },
+  { label: "Code", items: "Python, Bash, Java" },
+  { label: "AI", items: "Claude and OpenAI APIs, LangChain, RAG, ChromaDB" },
+  { label: "Cloud", items: "AWS, Azure" },
 ];
 
-const skillIconMap: Record<string, { slug: string; color: string }> = {
-  "Red Hat OpenShift": { slug: "redhatopenshift", color: "EE0000" },
-  "Kubernetes":        { slug: "kubernetes",       color: "326CE5" },
-  "Docker":            { slug: "docker",           color: "2496ED" },
-  "Podman":            { slug: "podman",           color: "892CA0" },
-  "k3s":               { slug: "k3s",              color: "FFC61C" },
-  "Ansible Automation Platform": { slug: "ansible", color: "EE0000" },
-  "RHEL":              { slug: "redhat",           color: "EE0000" },
-  "Ubuntu":            { slug: "ubuntu",           color: "E95420" },
-  "Loki":              { slug: "grafana",          color: "F46800" },
-  "Alertmanager":      { slug: "prometheus",       color: "E6522C" },
-  "Terraform":         { slug: "terraform",        color: "7B42BC" },
-  "Helm":              { slug: "helm",             color: "0F1689" },
-  "ArgoCD":            { slug: "argo",             color: "EF7B4D" },
-  "GitHub Actions":    { slug: "githubactions",    color: "2088FF" },
-  "GitLab CI/CD":      { slug: "gitlab",           color: "FC6D26" },
-  "Jenkins":           { slug: "jenkins",          color: "D24939" },
-  "OpenAI API":        { slug: "openai",           color: "74aa9c" },
-  "LangChain":         { slug: "langchain",        color: "1C3C3C" },
-  "Python":            { slug: "python",           color: "3776AB" },
-  "Bash":              { slug: "gnubash",          color: "4EAA25" },
-  "Java":              { slug: "openjdk",          color: "ED8B00" },
-  "AWS":               { slug: "amazonaws",        color: "FF9900" },
-  "Microsoft Azure":   { slug: "microsoftazure",   color: "0078D4" },
-};
-
-function toKebab(title: string): string {
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
+const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift and Kubernetes platforms. Red Hat Certified Engineer in OpenShift.";
 ---
 
 <!DOCTYPE html>
@@ -159,32 +98,30 @@ function toKebab(title: string): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <title>Jayvee Celestial — DevOps &amp; AI Engineering</title>
-  <meta name="description" content="DevOps Engineer specializing in OpenShift, Kubernetes, and LLM workflow automation. Red Hat certified. Available for remote projects." />
-  <!-- OG / Social -->
-  <meta property="og:title" content="Jayvee Celestial — DevOps &amp; AI Engineering" />
-  <meta property="og:description" content="DevOps Engineer specializing in OpenShift, Kubernetes, and LLM workflow automation. Red Hat certified. Available for remote projects." />
+  <title>Jayvee Celestial</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content="Jayvee Celestial" />
+  <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jayveecelestial.com" />
   <meta property="og:image" content="https://jayveecelestial.com/og-image.png" />
-  <meta name="twitter:image" content="https://jayveecelestial.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Jayvee Celestial — DevOps &amp; AI Engineering" />
-  <meta name="twitter:description" content="DevOps Engineer specializing in OpenShift, Kubernetes, and LLM workflow automation. Red Hat certified. Available for remote projects." />
+  <meta name="twitter:title" content="Jayvee Celestial" />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content="https://jayveecelestial.com/og-image.png" />
   <link rel="canonical" href="https://jayveecelestial.com" />
-  <!-- JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700&family=Red+Hat+Mono:wght@400;500&family=Red+Hat+Text:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Jayvee Celestial",
-    "jobTitle": "Freelance DevOps & AI Engineering Consultant",
+    "jobTitle": "Senior DevOps Engineer",
     "url": "https://jayveecelestial.com",
-    "email": "jayveecmacaraeg [at] gmail [dot] com",
     "sameAs": [
       "https://www.linkedin.com/in/jayveecelestial/",
       "https://github.com/jayveecelestial",
@@ -193,559 +130,290 @@ function toKebab(title: string): string {
   }
   </script>
 </head>
-<body class="bg-slate-950 text-slate-200 font-sans antialiased">
+<body>
+  <main>
+    <header class="intro">
+      <img src="/avatar.png" alt="" width="64" height="64" class="avatar" />
+      <h1>Jayvee Celestial</h1>
+      <p class="lede">
+        I build and run OpenShift and Kubernetes platforms. Right now that's
+        release automation at <strong>eMcREY</strong> in Riyadh; before that,
+        three years at <strong>IBM</strong> keeping banking platforms deployable
+        and governed across clusters.
+      </p>
+      <p>
+        On the side I'm running LLM workloads on Kubernetes, mostly to see
+        where they break. I take on remote DevOps work, from a single pipeline
+        to a whole platform.
+      </p>
+      <ul class="links">
+        <li><a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>Email</a></li>
+        {links.map(l => (
+          <li><a href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener">{l.label}</a></li>
+        ))}
+      </ul>
+    </header>
 
-  <!-- Nav -->
-  <nav class="fixed top-0 w-full bg-slate-950/80 backdrop-blur border-b border-slate-800 z-50">
-    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-      <span class="font-bold text-indigo-400 tracking-tight">JC</span>
-      <!-- Desktop links -->
-      <div class="hidden md:flex gap-6 text-sm text-slate-400">
-        <a href="#services" data-nav="services" class="nav-link hover:text-slate-100 transition-colors">Services</a>
-        <a href="#experience" data-nav="experience" class="nav-link hover:text-slate-100 transition-colors">Experience</a>
-        <a href="#projects" data-nav="projects" class="nav-link hover:text-slate-100 transition-colors">Projects</a>
-        <a href="#skills" data-nav="skills" class="nav-link hover:text-slate-100 transition-colors">Skills</a>
-        <a href="#certifications" data-nav="certifications" class="nav-link hover:text-slate-100 transition-colors">Certs</a>
-        <a href="#contact" data-nav="contact" class="nav-link hover:text-slate-100 transition-colors">Contact</a>
-      </div>
-      <!-- Theme toggle -->
-      <button id="theme-toggle" aria-label="Toggle theme" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors">
-        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-        </svg>
-        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-        </svg>
-      </button>
-      <!-- Hamburger button (mobile) -->
-      <button id="menu-btn" class="md:hidden flex flex-col gap-1.5 p-2 group" aria-label="Toggle menu">
-        <span class="block w-5 h-0.5 bg-slate-400 group-hover:bg-slate-100 transition-colors"></span>
-        <span class="block w-5 h-0.5 bg-slate-400 group-hover:bg-slate-100 transition-colors"></span>
-        <span class="block w-5 h-0.5 bg-slate-400 group-hover:bg-slate-100 transition-colors"></span>
-      </button>
-    </div>
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-slate-950 border-t border-slate-800 px-6 py-4 flex flex-col gap-4 text-sm text-slate-400">
-      <a href="#services" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Services</a>
-      <a href="#experience" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Experience</a>
-      <a href="#projects" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Projects</a>
-      <a href="#skills" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Skills</a>
-      <a href="#certifications" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Certs</a>
-      <a href="#contact" class="hover:text-slate-100 transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
-    </div>
-  </nav>
-  <script>
-    document.getElementById('menu-btn')?.addEventListener('click', () => {
-      document.getElementById('mobile-menu')?.classList.toggle('hidden');
-    });
-  </script>
-
-  <!-- Hero -->
-  <section class="max-w-5xl mx-auto px-6 pt-36 pb-24 relative">
-    <div class="absolute -top-20 -left-20 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute top-10 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
-
-    <!-- Terminal window wrapper -->
-    <div class="relative z-10">
-      <!-- Terminal top bar -->
-      <div class="bg-slate-900 border border-slate-700/50 rounded-t-xl px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
-          <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
-          <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
-        </div>
-        <span class="font-mono text-xs text-slate-500">~/jayvee-celestial</span>
-      </div>
-      <!-- Terminal body -->
-      <div class="bg-slate-950/80 border border-t-0 border-slate-700/50 rounded-b-xl p-8">
-        <p class="font-mono text-sm text-slate-600 mb-4">$ whoami</p>
-        <img src="/avatar.png" alt="Jayvee Celestial" width="80" height="80" class="w-20 h-20 rounded-full object-cover mb-6 ring-4 ring-indigo-600/20" />
-        <p class="text-indigo-400 text-sm font-medium mb-3 tracking-widest uppercase">Freelance DevOps &amp; AI Engineering Consultant · Remote</p>
-        <h1 class="text-5xl font-bold text-slate-100 mb-4 leading-tight">Jayvee Celestial</h1>
-        <h2 class="text-xl text-slate-400 mb-3">
-          <span id="typing-text" class="text-slate-300">OpenShift &amp; Kubernetes Specialist</span><span class="typing-cursor">|</span>
-        </h2>
-        <p class="text-slate-300 text-lg font-medium mb-3">I help startups ship cloud-native infrastructure — without hiring a full-time DevOps team.</p>
-        <p class="text-slate-400 max-w-2xl text-base leading-relaxed mb-8">
-          4+ years shipping production infrastructure at IBM and eMcREY. I work with startups remotely on DevOps setup, Kubernetes/OpenShift deployments, CI/CD pipelines, and LLM workflow automation. Red Hat Certified Engineer in OpenShift. Available now for project-based or hourly engagements.
-        </p>
-        <div class="flex flex-wrap gap-3">
-          <a href="#contact"
-             class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">
-            Hire Me
-          </a>
-          <a href="#projects"
-             class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-            See My Work
-          </a>
-          <a href="/Jayvee-Celestial-CV.pdf" download
-             class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700 flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
-            </svg>
-            Download CV
-          </a>
-          <a href="https://linkedin.com/in/jayveecelestial" target="_blank"
-             class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-            LinkedIn
-          </a>
-          <a href="https://github.com/jayveecelestial" target="_blank"
-             class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-            GitHub
-          </a>
-          <a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank"
-             class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-            Credly
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Status Strip -->
-  <div class="border-y border-slate-800 bg-slate-900/50">
-    <div class="max-w-5xl mx-auto px-6 py-3 flex flex-wrap gap-6 text-sm">
-      <span class="flex items-center gap-2 text-slate-400">
-        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-        <span class="font-mono text-slate-300">&gt; available-for:</span> Freelance · Remote · Global
-      </span>
-      <span class="flex items-center gap-2 text-slate-400">
-        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-        <span class="font-mono text-slate-300">&gt; services:</span> DevOps · LLM Automation · Platform Engineering
-      </span>
-    </div>
-  </div>
-
-  <!-- Services -->
-  <section id="services" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-3">What I Do</h2>
-    <p class="text-slate-400 mb-10 max-w-2xl">Available for remote freelance engagements. Project-based or hourly.</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {services.map(s => (
-        <div class="flex flex-col rounded-xl overflow-hidden border border-slate-800 hover:border-slate-700 transition-colors">
-          <div class="bg-slate-800 border-b border-slate-700 px-4 py-2 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57] flex-shrink-0"></span>
-            <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e] flex-shrink-0"></span>
-            <span class="w-2.5 h-2.5 rounded-full bg-[#28c840] flex-shrink-0"></span>
-            <span class="font-mono text-xs text-slate-500 ml-1 truncate">{s.path}</span>
-          </div>
-          <div class="bg-slate-900 p-6 flex flex-col gap-4 flex-1">
-            <h3 class="font-semibold text-slate-100 leading-snug">{s.title}</h3>
-            <p class="text-slate-400 text-sm leading-relaxed flex-1">{s.description}</p>
-            <div class="flex flex-wrap gap-2">
-              {s.tags.map(t => (
-                <span class="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-400">{t}</span>
-              ))}
+    <section>
+      <h2>Work</h2>
+      <div class="body">
+        {experience.map(e => (
+          <article class="job">
+            <div class="row">
+              <h3>{e.role}, <span class="muted">{e.company}</span></h3>
+              <span class="meta">{e.period}</span>
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Experience -->
-  <section id="experience" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-10">Experience</h2>
-    <div>
-      {experience.map((e, i) => (
-        <div class="flex gap-6">
-          <div class="flex flex-col items-center">
-            <div class={`w-3 h-3 rounded-full mt-1.5 flex-shrink-0 ${e.current ? 'bg-indigo-500' : 'bg-slate-700'}`}></div>
-            {i < experience.length - 1 && <div class="w-px flex-1 bg-slate-800 mt-1 min-h-[3rem]"></div>}
-          </div>
-          <div class="pb-12 flex-1">
-            <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
-              <div>
-                <h3 class="font-semibold text-slate-100">{e.role}</h3>
-                <p class="text-indigo-400 text-sm mt-0.5">{e.company}</p>
-              </div>
-              <div class="text-right flex-shrink-0">
-                <p class="text-slate-400 text-sm">{e.period}</p>
-                <p class="text-slate-600 text-xs mt-0.5">{e.location}</p>
-              </div>
-            </div>
-            <ul class="space-y-1.5 mb-4">
-              {e.bullets.map(b => (
-                <li class="text-slate-400 text-sm leading-relaxed flex gap-2">
-                  <span class="text-slate-600 mt-1 flex-shrink-0">›</span>
-                  <span>{b}</span>
-                </li>
-              ))}
+            <ul>
+              {e.bullets.map(b => <li>{b}</li>)}
             </ul>
-            <div class="flex flex-wrap gap-2">
-              {e.skills.map(s => (
-                <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-xs text-slate-500">{s}</span>
-              ))}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+      <div class="body">
+        {projects.map(p => (
+          <article class="project">
+            <div class="row">
+              <h3><a href={p.href} target="_blank" rel="noopener">{p.title}</a></h3>
+              {p.live && <a class="meta" href={p.live} target="_blank" rel="noopener">live ↗</a>}
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
+            <p>{p.description}</p>
+            <p class="meta">{p.stack}</p>
+          </article>
+        ))}
+      </div>
+    </section>
 
-  <!-- Projects -->
-  <section id="projects" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-10">Projects</h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map(p => (
-        <div class="flex flex-col rounded-xl overflow-hidden border border-slate-800 hover:border-slate-700 transition-colors">
-          <!-- Terminal chrome header -->
-          <div class="bg-slate-800 border-b border-slate-700 px-4 py-2 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57] flex-shrink-0"></span>
-            <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e] flex-shrink-0"></span>
-            <span class="w-2.5 h-2.5 rounded-full bg-[#28c840] flex-shrink-0"></span>
-            <span class="font-mono text-xs text-slate-500 ml-1 truncate">~/projects/{toKebab(p.title)}</span>
-          </div>
-          <!-- Card body -->
-          <div class="bg-slate-900 p-6 flex flex-col gap-4 flex-1">
-            <div class="flex items-start justify-between gap-3">
-              <h3 class="font-semibold text-slate-100 leading-snug">{p.title}</h3>
-              <span class={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 border ${
-                p.status === 'Live' ? 'bg-green-950 text-green-400 border-green-900' :
-                p.status === 'Production' ? 'bg-blue-950 text-blue-400 border-blue-900' :
-                'bg-yellow-950 text-yellow-400 border-yellow-900'
-              }`}>
-                {p.status}
-              </span>
-            </div>
-            <p class="text-slate-400 text-sm leading-relaxed flex-1">{p.description}</p>
-            <div class="flex flex-wrap gap-2">
-              {p.stack.map(s => (
-                <span class="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-400">{s}</span>
-              ))}
-            </div>
-            <div class="flex gap-4 flex-wrap">
-              {p.url && (
-                <a href={p.url} target="_blank"
-                   class="text-green-400 hover:text-green-300 text-sm font-medium transition-colors">
-                  View Live →
-                </a>
-              )}
-              {p.github && (
-                <a href={p.github} target="_blank"
-                   class="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors">
-                  View on GitHub →
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
+    <section>
+      <h2>Certified</h2>
+      <div class="body">
+        <ul class="certs">
+          {certs.map(c => (
+            <li>
+              <span>{c.name}{c.code && <span class="meta code">{c.code}</span>}</span>
+              <span class="meta">{c.date}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="more"><a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank" rel="noopener">All badges on Credly</a></p>
+      </div>
+    </section>
 
-  <!-- Certifications -->
-  <section id="certifications" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-2">Certifications</h2>
-    <a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank"
-       class="text-indigo-400 hover:text-indigo-300 text-sm transition-colors mb-10 inline-block">
-      View all badges on Credly →
-    </a>
+    <section>
+      <h2>Tools</h2>
+      <div class="body">
+        <dl class="skills">
+          {skills.map(s => (
+            <>
+              <dt>{s.label}</dt>
+              <dd>{s.items}</dd>
+            </>
+          ))}
+        </dl>
+      </div>
+    </section>
 
-    <h3 class="font-mono text-xs text-slate-600 mb-4 mt-6"># Featured</h3>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-      {certs.filter(c => c.highlight).map(c => (
-        <div class="bg-slate-900 border border-indigo-900/40 rounded-xl p-4 hover:border-indigo-700/50 transition-colors">
-          <p class="text-xs text-indigo-400 font-medium mb-1.5">{c.issuer}</p>
-          <p class="text-slate-200 text-sm font-medium leading-snug">{c.name}</p>
-          <p class="text-slate-600 text-xs mt-2">{c.date}{c.expires ? ` · expires ${c.expires}` : ''}</p>
-        </div>
-      ))}
-    </div>
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="body">
+        <p>
+          Got a deployment that's stuck, or a platform that needs an owner?
+          Write to <a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>{email.user} at gmail</a>.
+          I usually reply within a day.
+        </p>
+      </div>
+    </section>
 
-    <h3 class="font-mono text-xs text-slate-600 mb-4"># Additional</h3>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      {certs.filter(c => !c.highlight).map(c => (
-        <div class="bg-slate-900/40 border border-slate-800 rounded-lg p-3">
-          <p class="text-xs text-slate-600 mb-0.5">{c.issuer}</p>
-          <p class="text-slate-300 text-sm leading-snug">{c.name}</p>
-          <p class="text-slate-700 text-xs mt-1">{c.date}</p>
-        </div>
-      ))}
-    </div>
-  </section>
+    <footer>
+      <span>© {new Date().getFullYear()} Jayvee Celestial</span>
+      <span>Riyadh</span>
+    </footer>
+  </main>
 
-  <!-- Skills -->
-  <section id="skills" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-10">Technical Skills</h2>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {skillGroups.map(g => (
-        <div>
-          <p class="font-mono text-xs text-slate-600 mb-3"># {g.label}</p>
-          <div class="flex flex-wrap gap-2">
-            {g.items.map(s => {
-              const icon = skillIconMap[s];
-              return (
-                <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-slate-400 inline-flex items-center gap-1.5">
-                  {icon && <img src={`https://cdn.simpleicons.org/${icon.slug}/${icon.color}`} alt="" width="12" height="12" class="flex-shrink-0" loading="lazy" />}
-                  {s}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="fade-section max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
-    <h2 class="text-2xl font-bold text-slate-100 mb-4">Let's Work Together</h2>
-    <p class="text-slate-400 mb-8 max-w-xl leading-relaxed">
-      Have a DevOps problem, a deployment that's blocking you, or an LLM workflow you want to ship fast? I'm available for remote freelance engagements — project-based or hourly.
-    </p>
-    <div class="flex flex-wrap gap-4">
-      <a href="#contact" id="contact-btn"
-         class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">
-        Start a Conversation
-      </a>
-      <script>
-        document.getElementById('contact-btn').addEventListener('click', function(e) {
-          e.preventDefault();
-          const u = 'jayveecmacaraeg';
-          const d = 'gmail.com';
-          window.location.href = 'mailto:' + u + '@' + d;
-        });
-      </script>
-      <a href="https://linkedin.com/in/jayveecelestial" target="_blank"
-         class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-        LinkedIn
-      </a>
-      <a href="https://github.com/jayveecelestial" target="_blank"
-         class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-        GitHub
-      </a>
-      <a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank"
-         class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-        Credly
-      </a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-slate-800 py-8 mt-8">
-    <div class="max-w-5xl mx-auto px-6 flex items-center justify-between text-slate-700 text-sm">
-      <span>Jayvee Celestial</span>
-      <span>Built with Astro + Tailwind</span>
-    </div>
-  </footer>
-
-  <style>
-    /* Dot-grid background texture */
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 56px;
+  <style is:global>
+    :root {
+      --bg: #f5f3ee;
+      --ink: #1d1c1a;
+      --muted: #6d695f;
+      --rule: #dcd7cc;
+      --accent: #b8231a;
+      --sans: "Red Hat Text", system-ui, sans-serif;
+      --display: "Red Hat Display", var(--sans);
+      --mono: "Red Hat Mono", ui-monospace, monospace;
     }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161513;
+        --ink: #e9e6df;
+        --muted: #9a958a;
+        --rule: #2e2c28;
+        --accent: #f0675c;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      background-image: radial-gradient(circle, rgba(99,102,241,0.08) 1px, transparent 1px);
-      background-size: 28px 28px;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 1.0625rem/1.65 var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    main {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 5rem 1.25rem 3rem;
     }
 
-    /* JetBrains Mono for font-mono */
-    .font-mono, code, pre {
-      font-family: 'JetBrains Mono', monospace;
+    a {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-color: var(--rule);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
+      transition: text-decoration-color 0.15s, color 0.15s;
+    }
+    a:hover { color: var(--accent); text-decoration-color: currentColor; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    h1, h2, h3, p, ul, dl, dd { margin: 0; }
+    strong { font-weight: 500; }
+    .muted { color: var(--muted); font-weight: 400; }
+    .meta {
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      white-space: nowrap;
     }
 
-    /* Light mode overrides */
-    html.light body {
-      background-color: #f8fafc;
-      color: #1e293b;
-      background-image: radial-gradient(circle, rgba(99,102,241,0.06) 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-
-    /* Backgrounds */
-    html.light .bg-slate-950 { background-color: #f8fafc !important; }
-    html.light .bg-slate-950\/80 { background-color: rgba(248,250,252,0.95) !important; }
-    html.light .bg-slate-900 { background-color: #ffffff !important; }
-    html.light .bg-slate-900\/50 { background-color: rgba(226,232,240,0.5) !important; }
-    html.light .bg-slate-900\/40 { background-color: rgba(226,232,240,0.4) !important; }
-    html.light .bg-slate-800 { background-color: #e2e8f0 !important; }
-
-    /* Terminal window elements in light mode */
-    html.light .bg-slate-900.border.border-slate-700\/50.rounded-t-xl { background-color: #e2e8f0 !important; }
-
-    /* Text — all must be dark enough on white */
-    html.light .text-slate-100 { color: #0f172a !important; }
-    html.light .text-slate-200 { color: #1e293b !important; }
-    html.light .text-slate-300 { color: #334155 !important; }
-    html.light .text-slate-400 { color: #475569 !important; }
-    html.light .text-slate-500 { color: #64748b !important; }
-    html.light .text-slate-600 { color: #64748b !important; }
-    html.light .text-slate-700 { color: #94a3b8 !important; }
-
-    /* Indigo — darken for contrast on white */
-    html.light .text-indigo-400 { color: #4338ca !important; }
-    html.light .text-indigo-300 { color: #4f46e5 !important; }
-
-    /* Status badges (project cards) */
-    html.light .bg-green-950 { background-color: #f0fdf4 !important; }
-    html.light .text-green-400 { color: #16a34a !important; }
-    html.light .border-green-900 { border-color: #bbf7d0 !important; }
-    html.light .bg-blue-950 { background-color: #eff6ff !important; }
-    html.light .text-blue-400 { color: #2563eb !important; }
-    html.light .border-blue-900 { border-color: #bfdbfe !important; }
-    html.light .bg-yellow-950 { background-color: #fffbeb !important; }
-    html.light .text-yellow-400 { color: #d97706 !important; }
-    html.light .border-yellow-900 { border-color: #fde68a !important; }
-
-    /* Borders */
-    html.light .border-slate-800 { border-color: #e2e8f0 !important; }
-    html.light .border-slate-700 { border-color: #cbd5e1 !important; }
-    html.light .border-slate-700\/50 { border-color: rgba(203,213,225,0.5) !important; }
-    html.light .border-indigo-900\/40 { border-color: rgba(99,102,241,0.2) !important; }
-    html.light .hover\:border-indigo-700\/50:hover { border-color: rgba(99,102,241,0.5) !important; }
-    html.light .hover\:border-slate-700:hover { border-color: #94a3b8 !important; }
-
-    /* Nav + mobile menu */
-    html.light #mobile-menu { background-color: #f8fafc !important; }
-
-    /* Buttons */
-    html.light .hover\:bg-slate-700:hover { background-color: #cbd5e1 !important; }
-    html.light #theme-toggle { color: #475569 !important; }
-    html.light #theme-toggle:hover { background-color: #e2e8f0 !important; color: #0f172a !important; }
-    html.light .nav-link.active { color: #0f172a !important; }
-    html.light .nav-link.active::after { background: #6366f1; }
-
-    .typing-cursor {
-      display: inline-block;
-      color: #6366f1;
-      animation: blink 1s step-end infinite;
-      margin-left: 1px;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    .fade-section {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
-  <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
-  </script>
-  <style>
-    .nav-link.active { color: #e2e8f0; }
-    .nav-link.active::after {
-      content: '';
+    /* Intro */
+    .avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
       display: block;
-      height: 2px;
-      background: #6366f1;
-      border-radius: 1px;
-      margin-top: 2px;
+      margin-bottom: 1.5rem;
+      filter: grayscale(1) contrast(1.05);
+    }
+    h1 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(2.25rem, 6vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .intro p { max-width: 38rem; margin-bottom: 1rem; }
+    .lede { font-size: 1.1875rem; }
+    .links {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.875rem;
+    }
+
+    /* Sections: label in a left column on wide screens */
+    section {
+      margin-top: 4.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--rule);
+    }
+    h2 {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    @media (min-width: 760px) {
+      section { display: grid; grid-template-columns: 8rem 1fr; gap: 0 2rem; }
+      h2 { margin: 0.2rem 0 0; }
+    }
+
+    h3 { font-size: 1.0625rem; font-weight: 500; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .job + .job, .project + .project { margin-top: 2.25rem; }
+    .job ul {
+      margin-top: 0.6rem;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.96875rem;
+    }
+    .job li { padding-left: 0.25rem; }
+    .job li + li { margin-top: 0.35rem; }
+    .job li::marker { content: "–  "; color: var(--rule); }
+
+    .project p { margin-top: 0.4rem; }
+    .project p:not(.meta) { color: var(--muted); font-size: 0.96875rem; }
+    .project h3 a { text-decoration-color: var(--accent); }
+
+    .certs { list-style: none; padding: 0; }
+    .certs li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .certs li:first-child { padding-top: 0; }
+    .certs .code { margin-left: 0.6rem; }
+    .more { margin-top: 1rem; font-size: 0.9375rem; }
+
+    .skills {
+      display: grid;
+      grid-template-columns: 7rem 1fr;
+      gap: 0.5rem 1rem;
+    }
+    .skills dt { color: var(--muted); }
+
+    footer {
+      margin-top: 5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      main { padding-top: 3rem; }
+      .row { flex-direction: column; gap: 0.1rem; }
+      .skills { grid-template-columns: 1fr; gap: 0; }
+      .skills dd { margin-bottom: 0.75rem; }
     }
   </style>
-  <!-- Back to top button -->
-  <button id="back-to-top" aria-label="Back to top"
-    class="fixed bottom-6 right-6 z-50 w-10 h-10 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-none">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-    </svg>
-  </button>
 
   <script>
-    const sections = ['services', 'experience', 'projects', 'skills', 'certifications', 'contact'];
-    const navLinks = document.querySelectorAll('.nav-link');
-    let clickLock = false;
-
-    function setActiveNav(id) {
-      navLinks.forEach(l => l.classList.remove('active'));
-      document.querySelector(`.nav-link[data-nav="${id}"]`)?.classList.add('active');
-    }
-
-    function updateNav() {
-      if (clickLock) return;
-      let current = '';
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= 100) current = id;
-        // last section: activate when any part visible in bottom half
-        else if (id === sections[sections.length - 1] && rect.top < window.innerHeight) current = id;
-      }
-      if (current) setActiveNav(current);
-    }
-
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        setActiveNav(link.dataset.nav);
-        clickLock = true;
-        setTimeout(() => { clickLock = false; updateNav(); }, 900);
+    // Build the address on click to keep it out of the HTML for scrapers.
+    document.querySelectorAll<HTMLAnchorElement>('.email-link').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        window.location.href = `mailto:${a.dataset.u}@${a.dataset.d}`;
       });
     });
-
-    window.addEventListener('scroll', updateNav, { passive: true });
-    updateNav();
   </script>
 
-  <!-- Theme toggle logic -->
-  <script>
-    const html = document.documentElement;
-    const moonIcon = document.getElementById('icon-moon');
-    const sunIcon = document.getElementById('icon-sun');
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light') {
-      html.classList.add('light');
-      moonIcon?.classList.add('hidden');
-      sunIcon?.classList.remove('hidden');
-    }
-    document.getElementById('theme-toggle')?.addEventListener('click', () => {
-      const isLight = html.classList.toggle('light');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      moonIcon?.classList.toggle('hidden', isLight);
-      sunIcon?.classList.toggle('hidden', !isLight);
-    });
-  </script>
-
-  <!-- Back to top logic -->
-  <script>
-    const btn = document.getElementById('back-to-top');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) {
-        btn?.classList.remove('opacity-0', 'pointer-events-none');
-      } else {
-        btn?.classList.add('opacity-0', 'pointer-events-none');
-      }
-    });
-    btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  </script>
-
-  <!-- Typing animation -->
-  <script>
-    const phrases = [
-      'OpenShift & Kubernetes Specialist',
-      'LLM Workflow Automation',
-      'Red Hat Certified Engineer in OpenShift',
-      'Platform Engineering for Startups',
-      'CI/CD & GitOps Expert',
-    ];
-    const el = document.getElementById('typing-text');
-    if (el) {
-      let i = 0, char = 0, deleting = false;
-      const tick = () => {
-        const phrase = phrases[i];
-        el.textContent = deleting ? phrase.slice(0, char--) : phrase.slice(0, char++);
-        if (!deleting && char > phrase.length) { deleting = true; setTimeout(tick, 1800); return; }
-        if (deleting && char < 0) { deleting = false; i = (i + 1) % phrases.length; char = 0; setTimeout(tick, 400); return; }
-        setTimeout(tick, deleting ? 40 : 70);
-      };
-      tick();
-    }
-  </script>
-
-  <!-- Vercel Analytics -->
   <script>
     import { inject } from '@vercel/analytics';
     inject();

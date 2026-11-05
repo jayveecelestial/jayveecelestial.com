@@ -1,9 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://jayveecelestial.com',
-  integrations: [tailwind(), sitemap()],
+  integrations: [sitemap()],
 });
