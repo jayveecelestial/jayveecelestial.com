@@ -1,10 +1,5 @@
 ---
-// Fonts are bundled and served from this site (Latin subset only).
-import '@fontsource/red-hat-display/latin-700.css';
-import '@fontsource/red-hat-text/latin-400.css';
-import '@fontsource/red-hat-text/latin-500.css';
-import '@fontsource/red-hat-mono/latin-400.css';
-import '@fontsource/red-hat-mono/latin-500.css';
+import Base from '../layouts/Base.astro';
 
 const email = { user: "jayveecmacaraeg", domain: "gmail.com" };
 
@@ -54,13 +49,12 @@ const experience = [
 
 const certs = [
   { name: "Red Hat Certified Engineer in OpenShift", date: "2026" },
-  { name: "Red Hat Certified Advanced System Administrator in OpenShift", date: "2026" },
-  { name: "OpenShift Automation and Integration", code: "EX380", date: "2026" },
+  { name: "Advanced System Administrator in OpenShift", code: "EX380", date: "2026" },
   { name: "OpenShift Advanced Cluster Security", code: "EX430", date: "2026" },
-  { name: "OpenShift Advanced Cluster Management", code: "EX432", date: "2025" },
-  { name: "OpenShift Administrator", code: "EX280", date: "2025" },
   { name: "Technologist in OpenShift", code: "EX180", date: "2026" },
-  { name: "Specialist in Containers", code: "EX188", date: "2025" },
+  { name: "OpenShift Advanced Cluster Management", code: "EX432", date: "2025" },
+  { name: "System Administrator in OpenShift", code: "EX280", date: "2025" },
+  { name: "Developer in Cloud-native Applications", code: "EX188", date: "2025" },
   { name: "AWS Certified Cloud Practitioner", date: "2026" },
 ];
 
@@ -78,343 +72,119 @@ const skills = [
 const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift and Kubernetes platforms. Red Hat Certified Engineer in OpenShift.";
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light dark" />
-  <link rel="icon" href="/favicon.ico" sizes="32x32" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <title>Jayvee Celestial</title>
-  <meta name="description" content={description} />
-  <meta property="og:title" content="Jayvee Celestial" />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://jayveecelestial.com" />
-  <meta property="og:image" content="https://jayveecelestial.com/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Jayvee Celestial, Senior DevOps Engineer" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Jayvee Celestial" />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="https://jayveecelestial.com/og-image.png" />
-  <link rel="canonical" href="https://jayveecelestial.com" />
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Jayvee Celestial",
-    "jobTitle": "Senior DevOps Engineer",
-    "url": "https://jayveecelestial.com",
-    "sameAs": [
-      "https://www.linkedin.com/in/jayveecelestial/",
-      "https://github.com/jayveecelestial",
-      "https://www.credly.com/users/jayvee-celestial/badges"
-    ]
-  }
-  </script>
-  <script is:inline>
-    // Apply a saved theme before first paint to avoid a flash.
-    try {
-      var t = localStorage.getItem('theme');
-      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-    } catch (e) {}
-  </script>
-</head>
-<body>
-  <main>
-    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch colour theme">
-      <span class="dot" aria-hidden="true"></span><span id="theme-label">Dark</span>
-    </button>
-    <header class="intro">
-      <img src="/avatar.webp" alt="" width="64" height="64" class="avatar" />
-      <h1>Jayvee Celestial</h1>
-      <p class="lede">
-        I build and run OpenShift and Kubernetes platforms. Right now that's
-        release automation at <strong>eMcREY</strong> in Riyadh; before that,
-        three years at <strong>IBM</strong> keeping banking platforms deployable
-        and governed across clusters.
-      </p>
-      <p>
-        I take on remote DevOps work, from a single pipeline to a whole
-        platform.
-      </p>
-      <ul class="links">
-        <li><a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>Email</a></li>
-        {links.map(l => (
-          <li><a href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener">{l.label}</a></li>
+<Base title="Jayvee Celestial" description={description}>
+  <Fragment slot="head">
+    <meta property="og:title" content="Jayvee Celestial" />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jayveecelestial.com" />
+    <meta property="og:image" content="https://jayveecelestial.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Jayvee Celestial, Senior DevOps Engineer" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jayvee Celestial" />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://jayveecelestial.com/og-image.png" />
+    <link rel="canonical" href="https://jayveecelestial.com" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Jayvee Celestial",
+      "jobTitle": "Senior DevOps Engineer",
+      "url": "https://jayveecelestial.com",
+      "sameAs": [
+        "https://www.linkedin.com/in/jayveecelestial/",
+        "https://github.com/jayveecelestial",
+        "https://www.credly.com/users/jayvee-celestial/badges"
+      ]
+    }
+    </script>
+  </Fragment>
+
+  <header class="intro">
+    <img src="/avatar.webp" alt="" width="64" height="64" class="avatar" />
+    <h1>Jayvee Celestial</h1>
+    <p class="lede">
+      I build and run OpenShift and Kubernetes platforms. Right now that's
+      release automation at <strong>eMcREY</strong> in Riyadh; before that,
+      three years at <strong>IBM</strong> keeping banking platforms deployable
+      and governed across clusters.
+    </p>
+    <p>
+      I take on remote DevOps work, from a single pipeline to a whole
+      platform.
+    </p>
+    <ul class="links">
+      <li><a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>Email</a></li>
+      {links.map(l => (
+        <li><a href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener">{l.label}</a></li>
+      ))}
+    </ul>
+  </header>
+
+  <section>
+    <h2>Work</h2>
+    <div class="body">
+      {experience.map(e => (
+        <article class="job">
+          <div class="row">
+            <h3>{e.role}, <span class="muted">{e.company}</span></h3>
+            <span class="meta">{e.period}</span>
+          </div>
+          <ul>
+            {e.bullets.map(b => <li>{b}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <h2>Certified</h2>
+    <div class="body">
+      <ul class="certs">
+        {certs.map(c => (
+          <li>
+            <span>{c.name}{c.code && <span class="meta code">{c.code}</span>}</span>
+            <span class="meta">{c.date}</span>
+          </li>
         ))}
       </ul>
-    </header>
+      <p class="more"><a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank" rel="noopener">All badges on Credly</a></p>
+    </div>
+  </section>
 
-    <section>
-      <h2>Work</h2>
-      <div class="body">
-        {experience.map(e => (
-          <article class="job">
-            <div class="row">
-              <h3>{e.role}, <span class="muted">{e.company}</span></h3>
-              <span class="meta">{e.period}</span>
-            </div>
-            <ul>
-              {e.bullets.map(b => <li>{b}</li>)}
-            </ul>
-          </article>
+  <section>
+    <h2>Tools</h2>
+    <div class="body">
+      <dl class="skills">
+        {skills.map(s => (
+          <>
+            <dt>{s.label}</dt>
+            <dd>{s.items}</dd>
+          </>
         ))}
-      </div>
-    </section>
+      </dl>
+    </div>
+  </section>
 
-    <section>
-      <h2>Certified</h2>
-      <div class="body">
-        <ul class="certs">
-          {certs.map(c => (
-            <li>
-              <span>{c.name}{c.code && <span class="meta code">{c.code}</span>}</span>
-              <span class="meta">{c.date}</span>
-            </li>
-          ))}
-        </ul>
-        <p class="more"><a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank" rel="noopener">All badges on Credly</a></p>
-      </div>
-    </section>
+  <section id="contact">
+    <h2>Contact</h2>
+    <div class="body">
+      <p>
+        Got a deployment that's stuck, or a platform that needs an owner?
+        Write to <a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>{email.user} at gmail</a>.
+        I usually reply within a day.
+      </p>
+    </div>
+  </section>
 
-    <section>
-      <h2>Tools</h2>
-      <div class="body">
-        <dl class="skills">
-          {skills.map(s => (
-            <>
-              <dt>{s.label}</dt>
-              <dd>{s.items}</dd>
-            </>
-          ))}
-        </dl>
-      </div>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <div class="body">
-        <p>
-          Got a deployment that's stuck, or a platform that needs an owner?
-          Write to <a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>{email.user} at gmail</a>.
-          I usually reply within a day.
-        </p>
-      </div>
-    </section>
-
-    <footer>
-      <span>© {new Date().getFullYear()} Jayvee Celestial</span>
-      <span>Riyadh</span>
-    </footer>
-  </main>
-
-  <style is:global>
-    :root {
-      --bg: #f5f3ee;
-      --ink: #1d1c1a;
-      --muted: #6d695f;
-      --rule: #dcd7cc;
-      --accent: #b8231a;
-      --sans: "Red Hat Text", system-ui, sans-serif;
-      --display: "Red Hat Display", var(--sans);
-      --mono: "Red Hat Mono", ui-monospace, monospace;
-    }
-    /* Dark palette: follows the device unless the visitor picked a theme. */
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --bg: #161513;
-        --ink: #e9e6df;
-        --muted: #9a958a;
-        --rule: #2e2c28;
-        --accent: #f0675c;
-        color-scheme: dark;
-      }
-    }
-    :root[data-theme="dark"] {
-      --bg: #161513;
-      --ink: #e9e6df;
-      --muted: #9a958a;
-      --rule: #2e2c28;
-      --accent: #f0675c;
-      color-scheme: dark;
-    }
-    :root[data-theme="light"] { color-scheme: light; }
-
-    *, *::before, *::after { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font: 400 1.0625rem/1.65 var(--sans);
-      -webkit-font-smoothing: antialiased;
-    }
-    ::selection { background: var(--accent); color: var(--bg); }
-
-    main {
-      max-width: 46rem;
-      margin: 0 auto;
-      padding: 5rem 1.25rem 3rem;
-      position: relative;
-    }
-
-    .theme-toggle {
-      position: absolute;
-      top: 5rem;
-      right: 1.25rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.3rem 0;
-      border: 0;
-      background: none;
-      color: var(--muted);
-      font: 400 0.8125rem/1 var(--mono);
-      cursor: pointer;
-      transition: color 0.15s;
-    }
-    .theme-toggle:hover { color: var(--accent); }
-    .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    .theme-toggle .dot {
-      width: 0.7rem; height: 0.7rem;
-      border-radius: 50%;
-      border: 1px solid currentColor;
-      background: linear-gradient(90deg, currentColor 50%, transparent 50%);
-    }
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-      text-decoration-color: var(--rule);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.2em;
-      transition: text-decoration-color 0.15s, color 0.15s;
-    }
-    a:hover { color: var(--accent); text-decoration-color: currentColor; }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    h1, h2, h3, p, ul, dl, dd { margin: 0; }
-    strong { font-weight: 500; }
-    .muted { color: var(--muted); font-weight: 400; }
-    .meta {
-      font-family: var(--mono);
-      font-size: 0.8125rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    /* Intro */
-    .avatar {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      display: block;
-      margin-bottom: 1.5rem;
-    }
-    h1 {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: clamp(2.25rem, 6vw, 3rem);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
-    }
-    .intro p { max-width: 38rem; margin-bottom: 1rem; }
-    .lede { font-size: 1.1875rem; }
-    .links {
-      list-style: none;
-      padding: 0;
-      margin-top: 1.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem 1.25rem;
-      font-family: var(--mono);
-      font-size: 0.875rem;
-    }
-
-    /* Sections: label in a left column on wide screens */
-    section {
-      margin-top: 4.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--rule);
-    }
-    h2 {
-      font-family: var(--mono);
-      font-weight: 500;
-      font-size: 0.8125rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-    }
-    @media (min-width: 760px) {
-      section { display: grid; grid-template-columns: 8rem 1fr; gap: 0 2rem; }
-      h2 { margin: 0.2rem 0 0; }
-    }
-
-    h3 { font-size: 1.0625rem; font-weight: 500; }
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-    }
-
-    .job + .job { margin-top: 2.25rem; }
-    .job ul {
-      margin-top: 0.6rem;
-      padding-left: 1.1rem;
-      color: var(--muted);
-      font-size: 0.96875rem;
-    }
-    .job li { padding-left: 0.25rem; }
-    .job li + li { margin-top: 0.35rem; }
-    .job li::marker { content: "–  "; color: var(--rule); }
-
-    .certs { list-style: none; padding: 0; }
-    .certs li {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--rule);
-    }
-    .certs li:first-child { padding-top: 0; }
-    .certs .code { margin-left: 0.6rem; }
-    .more { margin-top: 1rem; font-size: 0.9375rem; }
-
-    .skills {
-      display: grid;
-      grid-template-columns: 7rem 1fr;
-      gap: 0.5rem 1rem;
-    }
-    .skills dt { color: var(--muted); }
-
-    footer {
-      margin-top: 5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--rule);
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--mono);
-      font-size: 0.8125rem;
-      color: var(--muted);
-    }
-
-    @media (max-width: 480px) {
-      main { padding-top: 3rem; }
-      .theme-toggle { top: 3rem; }
-      .row { flex-direction: column; gap: 0.1rem; }
-      .skills { grid-template-columns: 1fr; gap: 0; }
-      .skills dd { margin-bottom: 0.75rem; }
-    }
-  </style>
+  <footer>
+    <span>© {new Date().getFullYear()} Jayvee Celestial</span>
+    <span>Riyadh</span>
+  </footer>
 
   <script>
     // Build the address on click to keep it out of the HTML for scrapers.
@@ -425,32 +195,4 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
       });
     });
   </script>
-
-  <script>
-    // Theme button: starts from the device setting; a click overrides it and is remembered.
-    const root = document.documentElement;
-    const btn = document.getElementById('theme-toggle');
-    const label = document.getElementById('theme-label');
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const current = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
-    const render = () => {
-      const next = current() === 'dark' ? 'Light' : 'Dark';
-      if (label) label.textContent = next;
-      btn?.setAttribute('aria-label', `Switch to ${next.toLowerCase()} theme`);
-    };
-    btn?.addEventListener('click', () => {
-      const next = current() === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch {}
-      render();
-    });
-    media.addEventListener('change', render);
-    render();
-  </script>
-
-  <script>
-    import { inject } from '@vercel/analytics';
-    inject();
-  </script>
-</body>
-</html>
+</Base>
