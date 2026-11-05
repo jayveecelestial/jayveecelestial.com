@@ -45,28 +45,6 @@ const experience = [
   },
 ];
 
-const projects = [
-  {
-    title: "GitOps homelab",
-    href: "https://github.com/jayveecelestial/homelab",
-    description: "Three-node k3s cluster on Hyper-V, run entirely from Git. ArgoCD with self-heal, ingress-nginx host routing, Tailscale-only access, Helm-managed PostgreSQL services. Next: Prometheus, Longhorn, cert-manager.",
-    stack: "k3s · ArgoCD · Helm · Tailscale",
-  },
-  {
-    title: "K8s log analyzer",
-    href: "https://github.com/jayveecelestial/k8s-log-analyzer",
-    description: "Incident triage service on Kubernetes. Pulls logs from Loki, takes Alertmanager webhooks, and suggests fixes by retrieving from a runbook knowledge base (CrashLoopBackOff, OOMKilled, ImagePullBackOff).",
-    stack: "Python · FastAPI · LangChain · ChromaDB · Claude API",
-  },
-  {
-    title: "Debt tracker",
-    href: "https://github.com/jayveecelestial/debt-tracker",
-    live: "https://personal-debt-tracker.fly.dev",
-    description: "Personal finance app with debt payoff strategies and remittance tracking. Containerised and shipped through GitHub Actions.",
-    stack: "FastAPI · PostgreSQL · Docker · GitHub Actions",
-  },
-];
-
 const certs = [
   { name: "Red Hat Certified Engineer in OpenShift", date: "2026" },
   { name: "Red Hat Certified Advanced System Administrator in OpenShift", date: "2026" },
@@ -166,22 +144,6 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
             <ul>
               {e.bullets.map(b => <li>{b}</li>)}
             </ul>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <section>
-      <h2>Projects</h2>
-      <div class="body">
-        {projects.map(p => (
-          <article class="project">
-            <div class="row">
-              <h3><a href={p.href} target="_blank" rel="noopener">{p.title}</a></h3>
-              {p.live && <a class="meta" href={p.live} target="_blank" rel="noopener">live ↗</a>}
-            </div>
-            <p>{p.description}</p>
-            <p class="meta">{p.stack}</p>
           </article>
         ))}
       </div>
@@ -350,7 +312,7 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
       gap: 1rem;
     }
 
-    .job + .job, .project + .project { margin-top: 2.25rem; }
+    .job + .job { margin-top: 2.25rem; }
     .job ul {
       margin-top: 0.6rem;
       padding-left: 1.1rem;
@@ -360,10 +322,6 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
     .job li { padding-left: 0.25rem; }
     .job li + li { margin-top: 0.35rem; }
     .job li::marker { content: "–  "; color: var(--rule); }
-
-    .project p { margin-top: 0.4rem; }
-    .project p:not(.meta) { color: var(--muted); font-size: 0.96875rem; }
-    .project h3 a { text-decoration-color: var(--accent); }
 
     .certs { list-style: none; padding: 0; }
     .certs li {
