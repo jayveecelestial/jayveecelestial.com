@@ -1,0 +1,73 @@
+---
+// Shared page frame: head, fonts, styles, theme button, analytics.
+// Fonts are bundled and served from this site (Latin subset only).
+import '@fontsource/red-hat-display/latin-700.css';
+import '@fontsource/red-hat-text/latin-400.css';
+import '@fontsource/red-hat-text/latin-500.css';
+import '@fontsource/red-hat-mono/latin-400.css';
+import '@fontsource/red-hat-mono/latin-500.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <slot name="head" />
+  <script is:inline>
+    // Apply a saved theme before first paint to avoid a flash.
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <main>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch colour theme">
+      <span class="dot" aria-hidden="true"></span><span id="theme-label">Dark</span>
+    </button>
+    <slot />
+  </main>
+
+  <script>
+    // Theme button: starts from the device setting; a click overrides it and is remembered.
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    const label = document.getElementById('theme-label');
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const current = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+    const render = () => {
+      const next = current() === 'dark' ? 'Light' : 'Dark';
+      if (label) label.textContent = next;
+      btn?.setAttribute('aria-label', `Switch to ${next.toLowerCase()} theme`);
+    };
+    btn?.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch {}
+      render();
+    });
+    media.addEventListener('change', render);
+    render();
+  </script>
+
+  <script>
+    import { inject } from '@vercel/analytics';
+    inject();
+  </script>
+</body>
+</html>
