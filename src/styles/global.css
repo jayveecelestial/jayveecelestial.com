@@ -279,7 +279,7 @@ html.game main {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   grid-template-columns: 1fr;
-  height: 100dvh;
+  min-height: 0;
 }
 html.game .site-footer { display: none; }
 html.game #sections { display: none; }

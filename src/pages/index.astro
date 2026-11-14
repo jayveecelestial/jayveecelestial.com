@@ -1,12 +1,22 @@
 ---
 import { Image } from 'astro:assets';
+import { getSecret } from 'astro:env/server';
 import Base from '../layouts/Base.astro';
+import VisitCounter from '../components/VisitCounter.astro';
+import { counterEnabled, readCreds } from '../lib/visit.ts';
 import portrait from '../assets/avatar.webp';
 import { STATIONS } from '../game/world';
 import { QUEST } from '../game/quest';
 import { email, links, experience, certs, skills, stats, offDuty, description } from '../data/profile';
 
 const site = 'https://jayveecelestial.com/';
+
+// Build-time gate: no strip and no request in previews or local builds.
+const counterOn = counterEnabled({
+  vercelEnv: process.env.VERCEL_ENV,
+  dev: import.meta.env.DEV,
+  ...readCreds(getSecret),
+});
 
 // Tiny 8x8 pixel icons; '#' = filled pixel. Drawn as one crisp path each.
 const icons: Record<string, string[]> = {
@@ -36,6 +46,7 @@ const twitch = offDuty.links[0];
 ---
 
 <Base title="Jayvee Celestial" description={description} skip>
+  {counterOn && <VisitCounter slot="top" />}
   <Fragment slot="head">
     <meta property="og:title" content="Jayvee Celestial" />
     <meta property="og:description" content={description} />

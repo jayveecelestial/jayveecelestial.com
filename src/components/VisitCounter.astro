@@ -1,0 +1,42 @@
+---
+// One-line visitor strip. Rendered only when the counter is enabled; stays
+// invisible (but keeps its height, so no layout shift) until numbers arrive.
+---
+
+<p id="visits" class="visits" role="group" title="Anonymous count · no personal data stored">
+  <span class="lbl">Visitor #</span><b id="visit-n"></b>
+  <span class="sep" aria-hidden="true">·</span>
+  <span class="lbl">Visit </span><b id="visit-visits"></b>
+  <span class="sep" aria-hidden="true">·</span>
+  <b id="visit-total"></b><span class="lbl"> Visitors</span>
+</p>
+
+<script>
+  import '../scripts/visit-counter';
+</script>
+
+<style>
+  .visits {
+    margin: 0;
+    height: 1.75rem;
+    line-height: 1.75rem;
+    flex: none;
+    background: var(--px-city);
+    border-bottom: 4px solid var(--edge);
+    font: 600 0.8rem/1.75rem var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  .visits[data-ready] { visibility: visible; }
+  .lbl, .sep { color: var(--muted); }
+  .sep { margin: 0 0.35em; }
+  b { color: var(--accent); font-weight: 600; }
+  @media (max-width: 400px) {
+    .visits { font-size: 0.7rem; letter-spacing: 0.02em; }
+  }
+</style>
