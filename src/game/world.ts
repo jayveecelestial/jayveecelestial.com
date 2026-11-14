@@ -61,10 +61,20 @@ export function hitStation(x: number, y: number): Station | null {
   return null;
 }
 
-/** Integer room-px scale from the wrap height; the camera is needed when the width can't show the whole room. */
-export function pickScale(wrapW: number, wrapH: number, dpr: number): { scale: number; camera: boolean } {
-  const scale = Math.max(1, Math.floor((wrapH * dpr) / ROOM_H));
-  return { scale, camera: scale * ROOM_W > wrapW * dpr };
+/** Narrowest slice of the room (room px) camera mode may show. */
+export const MIN_VIEW_W = 256;
+/** Smallest CSS px per room px camera mode may shrink to, so sprites stay legible. */
+export const MIN_CSS_SCALE = 1.25;
+
+/**
+ * Integer device px per room px. Fits the wrap height; when the whole room is too wide, camera mode shrinks
+ * the scale (never below MIN_CSS_SCALE) so more of the room shows, leaving reserveTop CSS px above for the HUD.
+ */
+export function pickScale(wrapW: number, wrapH: number, dpr: number, reserveTop = 0): { scale: number; camera: boolean } {
+  const s0 = Math.max(1, Math.floor((wrapH * dpr) / ROOM_H));
+  if (s0 * ROOM_W <= wrapW * dpr) return { scale: s0, camera: false };
+  const fit = Math.floor(dpr * Math.min((wrapH - reserveTop) / ROOM_H, wrapW / MIN_VIEW_W));
+  return { scale: Math.min(s0, Math.max(Math.ceil(dpr * MIN_CSS_SCALE), fit)), camera: true };
 }
 
 /** Left edge of the visible slice (viewW room px wide) following the hero, clamped to the room. */

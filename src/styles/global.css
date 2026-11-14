@@ -501,7 +501,7 @@ html.tutorial-open #quest { display: none !important; }
     box-shadow: none;
   }
   html.game main { grid-template-rows: minmax(220px, 1fr) auto auto; }
-  html.game #stage-wrap { grid-row: 1; }
+  html.game #stage-wrap { grid-row: 1; place-items: end center; }
   html.game #stations {
     grid-row: 2;
     display: grid;
@@ -523,7 +523,7 @@ html.tutorial-open #quest { display: none !important; }
     grid-template-columns: minmax(0, 1fr) minmax(15rem, 36%);
     grid-template-rows: minmax(0, 1fr) auto;
   }
-  html.game #stage-wrap { grid-row: 1 / 3; grid-column: 1; }
+  html.game #stage-wrap { grid-row: 1 / 3; grid-column: 1; place-items: end center; }
   html.game #tutorial { grid-row: 1; grid-column: 1; justify-self: start; width: min(22rem, 60vw); }
   html.game #stations {
     grid-row: 1;
