@@ -163,7 +163,7 @@ main {
 
 /* ---------- HUD, tutorial, stage: hidden until game ---------- */
 #hud { display: flex; justify-content: flex-end; flex-wrap: wrap; margin: 0 0 0.75rem; }
-#help { display: none; }
+#help, #sound { display: none; }
 #touchpad { display: none; }
 #stage-wrap { display: none; }
 #tutorial[hidden] { display: none; }
@@ -310,7 +310,11 @@ html.game #hud {
   z-index: 5;
   margin: 0.25rem;
 }
-html.game #help { display: inline-flex; }
+html.game #help, html.game #sound { display: inline-flex; }
+#sound { padding: 0; width: 44px; }
+#sound svg { width: 24px; height: 24px; flex: none; fill: currentColor; shape-rendering: crispEdges; }
+#sound[aria-pressed="false"] .snd-on { display: none; }
+#sound[aria-pressed="true"] .snd-off { display: none; }
 html.game #tutorial {
   grid-row: 1;
   grid-column: 1;
@@ -405,6 +409,11 @@ html.tutorial-open #quest { display: none !important; }
 #quest-done::backdrop { background: rgba(10, 7, 16, 0.55); }
 #quest-done h2 { margin-bottom: 0.5rem; }
 #quest-done h2:focus { outline: none; }
+.cv-check:empty { display: none; }
+.cv-check { flex-basis: 100%; display: flex; justify-content: center; max-width: 100%; margin-top: 0.5rem; overflow: hidden; }
+.cv-error, .cv-status { flex-basis: 100%; margin: 0.5rem 0 0; font-size: 0.95rem; text-align: center; }
+.cv-status:empty { display: none; }
+.cv-error a { text-decoration: underline; }
 .q-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
 #quest-done .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25); }
 .confetti {
@@ -423,7 +432,12 @@ html.tutorial-open #quest { display: none !important; }
 @media (max-width: 640px) {
   html.game #quest:not([hidden]) { margin: 0.5rem; }
   #quest-done[open] { margin: auto auto 0.5rem; width: calc(100vw - 1rem); }
-  html.game #quest:not([hidden]) { max-width: calc(100% - 13rem); }
+  /* Collapsed: sits beside the 3-button HUD (~232px + 4px margin), so cap it at 100% - 16rem (104px at 360px: x8-112, HUD starts ~x116) and trim the toggle padding. */
+  html.game #quest:not([hidden]) { max-width: calc(100% - 16rem); }
+  html.game #quest-toggle { padding-inline: 0.5rem; }
+  /* Expanded: overlay drops below the HUD (4px margin + 44px button + 4px margin + 8px gap = 4rem). */
+  html.game #quest:not([hidden]):has(#quest-list:not([hidden])) { max-width: calc(100% - 1rem); margin-top: 4rem; }
+  html.game #quest-list { padding-inline: 0.5rem; }
 }
 
 /* ---------- Touch controls: game mode on phones / coarse pointers ---------- */
@@ -501,7 +515,7 @@ html.tutorial-open #quest { display: none !important; }
     box-shadow: none;
   }
   html.game main { grid-template-rows: minmax(220px, 1fr) auto auto; }
-  html.game #stage-wrap { grid-row: 1; }
+  html.game #stage-wrap { grid-row: 1; place-items: end center; }
   html.game #stations {
     grid-row: 2;
     display: grid;
@@ -523,7 +537,7 @@ html.tutorial-open #quest { display: none !important; }
     grid-template-columns: minmax(0, 1fr) minmax(15rem, 36%);
     grid-template-rows: minmax(0, 1fr) auto;
   }
-  html.game #stage-wrap { grid-row: 1 / 3; grid-column: 1; }
+  html.game #stage-wrap { grid-row: 1 / 3; grid-column: 1; place-items: end center; }
   html.game #tutorial { grid-row: 1; grid-column: 1; justify-self: start; width: min(22rem, 60vw); }
   html.game #stations {
     grid-row: 1;
@@ -538,6 +552,8 @@ html.tutorial-open #quest { display: none !important; }
   html.game #touchpad { grid-row: 2; grid-column: 2; }
   #panel { --pad-w: max(15rem, 36vw); }
   html.game #hud { grid-row: 1; grid-column: 1; }
+  /* Expanded quest list would collide with the HUD in the narrow room column: drop it below. */
+  html.game #quest:not([hidden]):has(#quest-list:not([hidden])) { margin-top: 4rem; }
   #panel { inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; box-shadow: none; padding: 0 1rem 1rem; }
   html.game .station { flex: none; min-width: 0; padding: 0.35rem 0.25rem; font-size: 0.85rem; }
   html.game .station .icon { width: 20px; height: 20px; }

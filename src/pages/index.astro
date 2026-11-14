@@ -132,7 +132,7 @@ const twitch = offDuty.links[0];
     <h2 id="quest-done-title" tabindex="-1">Quest complete!</h2>
     <p>Thanks for touring the room. Want the full story?</p>
     <div class="q-actions">
-      <a class="btn" href="/Jayvee-Celestial-CV.pdf" download>Download CV</a>
+      <a class="btn" href="#contact" data-cv>Download CV</a>
       <a class="btn btn-alt email-link" href="#contact" data-u={email.user} data-d={email.domain}>Email me</a>
     </div>
     <div class="q-actions">
@@ -169,7 +169,9 @@ const twitch = offDuty.links[0];
       <ul class="links">
         <li><a class="btn email-link" href="#contact" data-u={email.user} data-d={email.domain}>Email</a></li>
         {links.map(l => (
-          <li><a class="btn" href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener noreferrer">{l.label}</a></li>
+          <li>{l.cv
+          ? <a class="btn" href={l.href} data-cv>{l.label}</a>
+          : <a class="btn" href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>}</li>
         ))}
       </ul>
     </section>
@@ -253,6 +255,7 @@ const twitch = offDuty.links[0];
 
   <script>
     import '../game/boot';
+    import '../scripts/cv-download';
 
     // Build the address on click to keep it out of the HTML for scrapers.
     document.querySelectorAll<HTMLAnchorElement>('.email-link').forEach(a => {

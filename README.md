@@ -39,13 +39,24 @@ Node version: see `engines` in `package.json`. `.npmrc` sets `legacy-peer-deps=t
 - `src/game/quest.ts`: the 3-task visitor quest (work, certs, contact) and its progress logic.
 - `src/game/game.test.ts`: unit tests for the game code.
 - `src/assets/`: images processed by Astro (`avatar.webp`, `hero.png`).
-- `public/`: static files (icons, avatar, social preview image, `robots.txt`, CV PDF).
+- `public/`: static files (icons, avatar, social preview image, `robots.txt`).
+- `src/pages/api/cv.ts`: `POST /api/cv`, the Turnstile-gated CV download. Logic lives in `src/lib/cv-route.ts` and `src/lib/turnstile.ts`.
 - `vercel.json`: Vercel config (security headers and CSP).
 
 ## Editing content
 
 - CV text and links: `src/data/profile.ts`.
-- CV PDF: replace `public/Jayvee-Celestial-CV.pdf`. Keep the file name, or update the "CV (PDF)" link in `profile.ts`.
+- CV PDF: see the next section. The PDF is not in `public/`.
+
+## CV download
+
+The CV PDF is private. Visitors pass a Cloudflare Turnstile check, then the page posts to `POST /api/cv`, which streams the file.
+
+- Production: the file lives in the Vercel Blob private store at `cv/Jayvee-Celestial-CV.pdf`. Upload a new version to that path. No redeploy needed.
+- Previews and any other non-production environment return 503 (fail closed). Only `VERCEL_ENV=production` reads the Blob.
+- Local dev: put the PDF at `private/Jayvee-Celestial-CV.pdf` (gitignored) and copy `.env.example` to `.env`. It holds Turnstile test keys that always pass.
+- Env vars: `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `BLOB_STORE_ID` (set automatically when the Blob store is connected to the project).
+- The old URL `/Jayvee-Celestial-CV.pdf` redirects to `/#contact`.
 
 ## Deploy
 
