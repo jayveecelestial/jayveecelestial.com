@@ -1,83 +1,33 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import portrait from '../assets/jayvee-pixel.png';
+import { STATIONS } from '../game/world';
+import { email, links, experience, certs, skills, stats, offDuty, description } from '../data/profile';
 
-const email = { user: "jayveeccelestial", domain: "gmail.com" };
+const site = 'https://jayveecelestial.com/';
 
-const links = [
-  { label: "GitHub", href: "https://github.com/jayveecelestial" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/jayveecelestial/" },
-  { label: "Credly", href: "https://www.credly.com/users/jayvee-celestial/badges" },
-  { label: "CV (PDF)", href: "/Jayvee-Celestial-CV.pdf", download: true },
-];
+// Tiny 8x8 pixel icons; '#' = filled pixel. Drawn as one crisp path each.
+const icons: Record<string, string[]> = {
+  about: ['..####..', '.######.', '.######.', '..####..', '...##...', '.######.', '########', '########'],
+  work: ['########', '#......#', '#.####.#', '########', '#......#', '#.####.#', '########', '........'],
+  certs: ['########', '#.####.#', '#.####.#', '.######.', '..####..', '...##...', '...##...', '..####..'],
+  tools: ['..####..', '..#..#..', '..####..', '...##...', '...##...', '...##...', '..####..', '..####..'],
+  'off-duty': ['########', '#......#', '#.####.#', '#.####.#', '#......#', '########', '..####..', '.######.'],
+  contact: ['########', '##....##', '#.#..#.#', '#..##..#', '#......#', '#......#', '########', '........'],
+};
+const iconPath = (rows: string[]) =>
+  rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 
-const experience = [
-  {
-    company: "eMcREY Limited",
-    role: "Senior DevOps Engineer",
-    period: "2025 – now",
-    location: "Riyadh",
-    bullets: [
-      "Designed multi-stage Control-M deployment workflows with human approval gates, file-watcher triggers, and per-order condition isolation so concurrent deployments stay safe.",
-      "Tracked down race conditions, stale conditions, and self-ordering loops in Control-M job flows; fixed SELinux contexts and agent host misconfigurations during the proof of concept.",
-      "Wrote Bash tooling for deployment payload extraction and approve/deny handling across segregated file-transfer zones.",
-      "Debugged and slimmed developer container images for OpenShift, making builds more reliable and deploys faster.",
-    ],
-  },
-  {
-    company: "IBM",
-    role: "Platform Engineer",
-    period: "2024 – 2025",
-    location: "Quezon City",
-    bullets: [
-      "Rolled out OpenShift ACM and ACS for central policy enforcement, RBAC governance, and security posture across multiple clusters.",
-      "Wrote ACM governance policies that catch anomalous resource usage and clean up temporary namespaces automatically.",
-      "Built Python and Bash scripts that cross-audit microservice versions between PROD and DR.",
-    ],
-  },
-  {
-    company: "IBM",
-    role: "DevOps Engineer",
-    period: "2022 – 2024",
-    location: "Quezon City",
-    bullets: [
-      "Ran Helm and GitOps deployments for large banking clients and external vendors with zero-downtime releases.",
-      "Built Jenkins declarative pipelines for pull request validation, code quality checks, and build analytics.",
-      "Trained and supported 300+ project managers, developers, and architects.",
-    ],
-  },
-];
-
-const certs = [
-  { name: "Red Hat Certified Engineer in OpenShift", date: "2026" },
-  { name: "Advanced System Administrator in OpenShift", code: "EX380", date: "2026" },
-  { name: "OpenShift Advanced Cluster Security", code: "EX430", date: "2026" },
-  { name: "Technologist in OpenShift", code: "EX180", date: "2026" },
-  { name: "OpenShift Advanced Cluster Management", code: "EX432", date: "2025" },
-  { name: "System Administrator in OpenShift", code: "EX280", date: "2025" },
-  { name: "Developer in Cloud-native Applications", code: "EX188", date: "2025" },
-  { name: "AWS Certified Cloud Practitioner", date: "2026" },
-];
-
-const skills = [
-  { label: "Platforms", items: "OpenShift, Kubernetes, k3s, Docker, Podman" },
-  { label: "Cluster ops", items: "ACM, ACS, multi-cluster governance, RBAC" },
-  { label: "Delivery", items: "ArgoCD, Helm, Jenkins, Nexus, GitLab CI, GitHub Actions" },
-  { label: "Automation", items: "Ansible, Terraform, Control-M" },
-  { label: "Linux", items: "RHEL, Ubuntu, SELinux, ingress-nginx, Tailscale" },
-  { label: "Code", items: "Python, Bash, Java" },
-  { label: "AI", items: "Claude and OpenAI APIs, LangChain, RAG, ChromaDB" },
-  { label: "Cloud", items: "AWS, Azure" },
-];
-
-const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift and Kubernetes platforms. Red Hat Certified Engineer in OpenShift.";
+const twitch = offDuty.links[0];
 ---
 
-<Base title="Jayvee Celestial" description={description}>
+<Base title="Jayvee Celestial" description={description} skip>
   <Fragment slot="head">
     <meta property="og:title" content="Jayvee Celestial" />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://jayveecelestial.com" />
+    <meta property="og:url" content={site} />
     <meta property="og:image" content="https://jayveecelestial.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -86,14 +36,14 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
     <meta name="twitter:title" content="Jayvee Celestial" />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://jayveecelestial.com/og-image.png" />
-    <link rel="canonical" href="https://jayveecelestial.com" />
+    <link rel="canonical" href={site} />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Jayvee Celestial",
       "jobTitle": "Senior DevOps Engineer",
-      "url": "https://jayveecelestial.com",
+      "url": "https://jayveecelestial.com/",
       "sameAs": [
         "https://www.linkedin.com/in/jayveecelestial/",
         "https://github.com/jayveecelestial",
@@ -103,90 +53,158 @@ const description = "Senior DevOps engineer in Riyadh. I build and run OpenShift
     </script>
   </Fragment>
 
-  <header class="intro">
-    <img src="/avatar.webp" alt="" width="64" height="64" class="avatar" />
-    <h1>Jayvee Celestial</h1>
-    <p class="lede">
-      I build and run OpenShift and Kubernetes platforms. Right now that's
-      release automation at <strong>eMcREY</strong> in Riyadh; before that,
-      three years at <strong>IBM</strong> keeping banking platforms deployable
-      and governed across clusters.
-    </p>
-    <p>
-      I take on remote DevOps work, from a single pipeline to a whole
-      platform.
-    </p>
-    <ul class="links">
-      <li><a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>Email</a></li>
-      {links.map(l => (
-        <li><a href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener">{l.label}</a></li>
-      ))}
-    </ul>
-  </header>
+  <div id="hud">
+    <a id="mode-toggle" class="btn btn-small" href="?view=plain#about">Plain view</a>
+    <button id="help" class="btn btn-small" type="button" aria-label="How to play">?</button>
+  </div>
 
-  <section>
-    <h2>Work</h2>
-    <div class="body">
-      {experience.map(e => (
-        <article class="job">
-          <div class="row">
-            <h3>{e.role}, <span class="muted">{e.company}</span></h3>
-            <span class="meta">{e.period}</span>
-          </div>
-          <ul>
-            {e.bullets.map(b => <li>{b}</li>)}
-          </ul>
-        </article>
-      ))}
-    </div>
-  </section>
+  <div id="stage-wrap">
+    <canvas id="stage" width="384" height="216" aria-hidden="true"></canvas>
+  </div>
 
-  <section>
-    <h2>Certified</h2>
-    <div class="body">
-      <ul class="certs">
-        {certs.map(c => (
-          <li>
-            <span>{c.name}{c.code && <span class="meta code">{c.code}</span>}</span>
-            <span class="meta">{c.date}</span>
-          </li>
+  <div id="touchpad" aria-hidden="true">
+    <button type="button" tabindex="-1" data-move="left">◀</button>
+    <button type="button" tabindex="-1" data-act>Open</button>
+    <button type="button" tabindex="-1" data-move="right">▶</button>
+  </div>
+
+  <nav id="stations" aria-label="Sections">
+    {STATIONS.map(s => (
+      <a class="btn station" href={`#${s.id}`} data-station={s.id}>
+        <svg class="icon" viewBox="0 0 8 8" width="24" height="24" aria-hidden="true" focusable="false" shape-rendering="crispEdges">
+          <path d={iconPath(icons[s.id])} fill="currentColor" />
+        </svg>
+        <span>{s.label}</span>
+      </a>
+    ))}
+  </nav>
+
+  <div id="tutorial" class="px-panel" role="region" aria-label="How to play" hidden>
+    <h2>How to play</h2>
+    <p data-tutorial-keys>
+      Walk with the left and right arrow keys or A and D. Jump with Up, W or Space.
+      Stand near a glowing object and press Enter or E to open it. Esc closes.
+    </p>
+    <p data-tutorial-touch>
+      Tap an object to walk there and open it, or use the buttons below the room.
+    </p>
+    <button type="button" class="btn" data-tutorial-close>Got it</button>
+  </div>
+
+  <div id="sections">
+    <section id="about" class="px-panel sec">
+      <p class="kicker">Player 1</p>
+      <h2 id="about-title" tabindex="-1">About</h2>
+      <div class="card">
+        <Image src={portrait} alt="Pixel portrait of Jayvee" width={144} height={144} format="png" class="portrait" loading="eager" />
+        <div class="card-body">
+          <h1>Jayvee Celestial</h1>
+          <p class="role">Senior DevOps Engineer</p>
+        </div>
+      </div>
+      <ul class="stats">
+        {stats.map(s => (
+          <li class="tile"><strong>{s.value}</strong><span>{s.label}</span></li>
         ))}
       </ul>
-      <p class="more"><a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank" rel="noopener">All badges on Credly</a></p>
-    </div>
-  </section>
-
-  <section>
-    <h2>Tools</h2>
-    <div class="body">
-      <dl class="skills">
-        {skills.map(s => (
-          <>
-            <dt>{s.label}</dt>
-            <dd>{s.items}</dd>
-          </>
-        ))}
-      </dl>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2>Contact</h2>
-    <div class="body">
-      <p>
-        Got a deployment that's stuck, or a platform that needs an owner?
-        Write to <a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>{email.user} at gmail</a>.
-        I usually reply within a day.
+      <p class="lede">
+        I build and run OpenShift and Kubernetes platforms. Right now that's
+        release automation at <strong>eMcREY</strong> in Riyadh; before that,
+        three years at <strong>IBM</strong> keeping banking platforms deployable
+        and governed across clusters.
       </p>
-    </div>
-  </section>
+      <p>
+        I take on remote DevOps work, from a single pipeline to a whole
+        platform.
+      </p>
+      <ul class="links">
+        <li><a class="btn email-link" href="#contact" data-u={email.user} data-d={email.domain}>Email</a></li>
+        {links.map(l => (
+          <li><a class="btn" href={l.href} download={l.download ? "" : undefined} target={l.download ? undefined : "_blank"} rel="noopener noreferrer">{l.label}</a></li>
+        ))}
+      </ul>
+    </section>
 
-  <footer>
-    <span>© {new Date().getFullYear()} Jayvee Celestial</span>
-    <span>Riyadh</span>
-  </footer>
+    <section id="work" class="px-panel sec">
+      <p class="kicker">Quest log</p>
+      <h2 id="work-title" tabindex="-1">Work</h2>
+      <div class="body">
+        {experience.map(e => (
+          <article class="job">
+            <div class="row">
+              <h3>{e.role}, <span class="muted">{e.company}</span></h3>
+              <span class="meta">{e.period}</span>
+            </div>
+            <ul>
+              {e.bullets.map(b => <li>{b}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="certs" class="px-panel sec">
+      <p class="kicker">Achievements {certs.length}/{certs.length}</p>
+      <h2 id="certs-title" tabindex="-1">Certifications</h2>
+      <div class="body">
+        <ul class="certs">
+          {certs.map(c => (
+            <li>
+              <span>{c.name}{c.code && <span class="meta code">{c.code}</span>}</span>
+              <span class="meta">{c.date}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="more"><a href="https://www.credly.com/users/jayvee-celestial/badges" target="_blank" rel="noopener noreferrer">All badges on Credly</a></p>
+      </div>
+    </section>
+
+    <section id="tools" class="px-panel sec">
+      <p class="kicker">Inventory</p>
+      <h2 id="tools-title" tabindex="-1">Tools</h2>
+      <div class="body">
+        <dl class="skills">
+          {skills.map(s => (
+            <>
+              <dt>{s.label}</dt>
+              <dd>{s.items}</dd>
+            </>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="off-duty" class="px-panel sec">
+      <p class="kicker">Side quest</p>
+      <h2 id="off-duty-title" tabindex="-1">Off duty</h2>
+      <div class="body">
+        <p>{offDuty.text}</p>
+        <p><a class="btn" href={twitch.href} target="_blank" rel="noopener noreferrer">Watch on Twitch</a> <span class="meta">{twitch.handle}</span></p>
+      </div>
+    </section>
+
+    <section id="contact" class="px-panel sec">
+      <p class="kicker">Mailbox</p>
+      <h2 id="contact-title" tabindex="-1">Contact</h2>
+      <div class="body">
+        <p>
+          Got a deployment that's stuck, or a platform that needs an owner?
+          Write to <a href="#contact" class="email-link" data-u={email.user} data-d={email.domain}>{email.user} at gmail</a>.
+          I usually reply within a day.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="panel">
+    <button type="button" class="btn btn-small close" data-close aria-label="Close">X</button>
+  </dialog>
+
+  <div id="live" class="sr-only" aria-live="polite"></div>
 
   <script>
+    import '../game/boot';
+
     // Build the address on click to keep it out of the HTML for scrapers.
     document.querySelectorAll<HTMLAnchorElement>('.email-link').forEach(a => {
       a.addEventListener('click', e => {

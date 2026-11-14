@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import hero from '../assets/hero.png';
 ---
 
 <Base title="Page not found · Jayvee Celestial" description="This page doesn't exist.">
@@ -7,14 +9,13 @@ import Base from '../layouts/Base.astro';
     <meta name="robots" content="noindex" />
   </Fragment>
 
-  <header class="intro">
-    <p class="meta">404</p>
+  <section class="px-panel lost">
+    <Image src={hero} alt="" width={hero.width * 4} height={hero.height * 4} format="png" class="hero" />
+    <p class="kicker">404 · Wrong room</p>
     <h1>Nothing here.</h1>
     <p class="lede">
       This page doesn't exist, or it moved when the site was redesigned.
     </p>
-    <ul class="links">
-      <li><a href="/">Back to the homepage</a></li>
-    </ul>
-  </header>
+    <p><a class="btn" href="/">Back to the homepage</a></p>
+  </section>
 </Base>
