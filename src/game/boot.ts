@@ -37,7 +37,7 @@ function boot() {
 
   const toggle = $<HTMLAnchorElement>("#mode-toggle");
   if (toggle) {
-    toggle.textContent = plain ? "Play mode" : "Plain view";
+    toggle.textContent = plain ? "Play mode" : "Just the CV";
     toggle.href = plain ? "/" : "?view=plain#about";
     toggle.addEventListener("click", () => store.set(MODE_KEY, plain ? "play" : "plain"));
   }
