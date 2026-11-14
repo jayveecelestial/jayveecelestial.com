@@ -330,6 +330,104 @@ html.game #tutorial h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
 html.game #tutorial p { font-size: 0.95rem; margin-bottom: 0.75rem; }
 html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25); }
 
+/* ---------- Quest tracker + completion card (game mode only) ---------- */
+#quest { display: none; }
+.nowrap { white-space: nowrap; }
+html.game #quest:not([hidden]) {
+  display: block;
+  grid-row: 1;
+  grid-column: 1;
+  align-self: start;
+  justify-self: start;
+  z-index: 10;
+  margin: 0.75rem;
+  max-width: calc(100vw - 7rem);
+  background: rgba(26, 20, 35, 0.88);
+  color: var(--text);
+  font-size: 0.95rem;
+  box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge);
+}
+html.tutorial-open #quest { display: none !important; }
+#quest-toggle {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: 700 1rem var(--display);
+  cursor: pointer;
+}
+#quest-count { color: var(--accent); }
+.q-complete, .q-reset { display: none; }
+#quest.complete .q-complete { display: inline; color: var(--teal); }
+#quest.complete .q-title { display: none; }
+#quest.complete .q-complete::before { content: "\2713 "; }
+#quest.complete #quest-count { display: none; }
+#quest.complete .q-reset { display: inline-flex; margin: 0 0.75rem 0.6rem; }
+#quest-toggle[aria-expanded="false"] ~ .q-reset { display: none !important; }
+#quest-list { list-style: none; margin: 0; padding: 0 0.75rem 0.6rem; }
+#quest-list[hidden] { display: none; }
+#quest-list li { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0; }
+.q-box {
+  flex: none;
+  width: 14px; height: 14px;
+  background: var(--bg);
+  box-shadow: 0 -2px 0 0 var(--muted), 0 2px 0 0 var(--muted), -2px 0 0 0 var(--muted), 2px 0 0 0 var(--muted);
+  margin: 2px;
+}
+#quest-list li.done { color: var(--muted); text-decoration: line-through; }
+#quest-list li.done .q-box {
+  background: var(--teal);
+  box-shadow: 0 -2px 0 0 var(--teal), 0 2px 0 0 var(--teal), -2px 0 0 0 var(--teal), 2px 0 0 0 var(--teal);
+}
+.btn-alt { background: #e6d9bd; }
+.btn-alt:hover { background: #f1e6cc; }
+
+#quest-done[open] {
+  display: block;
+  z-index: 30;
+  inset: 0;
+  margin: auto;
+  width: min(26rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 1rem);
+  padding: 1.25rem;
+  border: 0;
+  overflow: auto;
+  text-align: center;
+  background: var(--panel);
+  color: var(--ink);
+  --fg: var(--ink);
+  --focus: var(--teal-on-panel);
+  box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge), inset 0 4px 0 0 #fff8e6, inset 0 -4px 0 0 #cdbd9b;
+}
+#quest-done::backdrop { background: rgba(10, 7, 16, 0.55); }
+#quest-done h2 { margin-bottom: 0.5rem; }
+#quest-done h2:focus { outline: none; }
+.q-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
+#quest-done .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25); }
+.confetti {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 8px; height: 8px;
+  pointer-events: none;
+  background: var(--accent);
+  box-shadow: -120px 20px 0 var(--teal), -80px 0 0 var(--px-tool), -40px 30px 0 var(--px-gold), 40px 10px 0 var(--teal), 80px 28px 0 var(--accent), 120px 4px 0 var(--px-tool), 150px 24px 0 var(--px-gold), -150px 8px 0 var(--accent);
+  animation: confetti-fall 1.6s steps(8) 3 forwards;
+}
+@keyframes confetti-fall {
+  from { transform: translateY(-20px); opacity: 1; }
+  to { transform: translateY(240px); opacity: 0; }
+}
+@media (max-width: 640px) {
+  html.game #quest:not([hidden]) { margin: 0.5rem; }
+  #quest-done[open] { margin: auto auto 0.5rem; width: calc(100vw - 1rem); }
+  html.game #quest:not([hidden]) { max-width: calc(100% - 13rem); }
+}
+
 /* ---------- Touch controls: game mode on phones / coarse pointers ---------- */
 @media (max-width: 640px), (pointer: coarse) {
   html.game main { grid-template-rows: minmax(0, 1fr) auto auto; }
@@ -456,5 +554,6 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
   .btn:active { transform: none; }
   /* No game loop: the buttons would do nothing. Empty auto row collapses to 0. */
   html.game #touchpad { display: none; }
+  .confetti { display: none; }
 }
 .lost .hero { image-rendering: pixelated; display: block; margin: 0 0 1rem; }

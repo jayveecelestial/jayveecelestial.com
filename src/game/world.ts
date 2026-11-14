@@ -24,7 +24,7 @@ export interface Station {
 export const STATIONS: readonly Station[] = [
   { id: "about", x: 24, w: 24, label: "Player card", sprite: "frame", h: 28, lift: 56 },
   { id: "work", x: 76, w: 32, label: "Quest log", sprite: "rack", h: 56 },
-  { id: "certs", x: 130, w: 48, label: `Achievements ${certs.length}/${certs.length}`, sprite: "shelf", h: 44 },
+  { id: "certs", x: 130, w: 48, label: `Trophies · ${certs.length} certs`, sprite: "shelf", h: 44 },
   { id: "tools", x: 198, w: 48, label: "Inventory", sprite: "bench", h: 40 },
   { id: "off-duty", x: 262, w: 64, label: "Off duty", sprite: "couch", h: 40 },
   { id: "contact", x: 342, w: 24, label: "Mailbox", sprite: "mailbox", h: 40 },
