@@ -1,10 +1,13 @@
 import { createInput } from "./input.ts";
 import { bubbleText, createRenderer } from "./render.ts";
+import { QUEST, announcement, isComplete, isQuestId, markDone, parseStored, shouldShowBanner, type QuestId } from "./quest.ts";
 import { initialState, resolveMode, update } from "./state.ts";
 import { stationById } from "./world.ts";
 
 const MODE_KEY = "ng-mode";
 const TUTORIAL_KEY = "ng-tutorial";
+const QUEST_KEY = "ng-quest";
+const SEEN_KEY = "ng-quest-seen";
 const STEP = 1 / 60;
 
 const store = {
@@ -55,13 +58,84 @@ function boot() {
     (navigator.maxTouchPoints > 0 && !matchMedia("(any-pointer: fine)").matches);
   let fontOk = false;
   const renderer = createRenderer(canvas, wrap);
-  const blocked = () => panel.open || (!reduced && !raf);
+  const blocked = () => panel.open || !!doneDlg?.open || (!reduced && !raf);
   const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();
   let onscreen = true;
   let raf = 0;
   let last = 0;
   let acc = 0;
+
+  // ---- quest: open Work, Trophies and Mailbox ----
+  const tracker = $("#quest");
+  const doneDlg = $<HTMLDialogElement>("#quest-done");
+  let done: readonly QuestId[] = parseStored(store.get(QUEST_KEY));
+  let showDoneAfterClose = false;
+  /** #live is inert while a modal is open, so announcements wait for the panel to close. */
+  let pendingMsg = "";
+
+  const renderQuest = () => {
+    if (!tracker) return;
+    tracker.hidden = false;
+    tracker.classList.toggle("complete", isComplete(done));
+    const count = $("#quest-count");
+    if (count) count.textContent = `${done.length}/${QUEST.length}`;
+    tracker.querySelectorAll<HTMLElement>("[data-quest]").forEach((li) => {
+      const ok = done.includes(li.dataset.quest as QuestId);
+      li.classList.toggle("done", ok);
+      const state = li.querySelector(".q-state");
+      if (state) state.textContent = ok ? "done" : "to do";
+    });
+  };
+
+  const showDone = () => {
+    if (!doneDlg || doneDlg.open) return;
+    store.set(SEEN_KEY, "1");
+    doneDlg.showModal();
+    sync();
+  };
+  doneDlg?.addEventListener("close", () => sync());
+
+  const questOpened = (id: string) => {
+    if (!isQuestId(id)) return;
+    const next = markDone(done, id);
+    if (next === done) return;
+    done = next;
+    store.set(QUEST_KEY, JSON.stringify(done));
+    renderQuest();
+    pendingMsg = announcement(done, id);
+    if (isComplete(done)) showDoneAfterClose = true;
+  };
+
+  doneDlg?.querySelectorAll("[data-quest-close]").forEach((b) => b.addEventListener("click", () => doneDlg.close()));
+  document.querySelectorAll<HTMLElement>("[data-quest-reset]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      doneDlg?.close();
+      done = [];
+      showDoneAfterClose = false;
+      pendingMsg = "";
+      store.set(QUEST_KEY, "[]");
+      store.set(SEEN_KEY, "0");
+      renderQuest();
+      // The tracker's own button hides once reset; keep focus on a live control.
+      if (tracker?.contains(btn)) $("#quest-toggle")?.focus();
+    }),
+  );
+
+  // Tracker: collapsed on small screens, open otherwise; the toggle overrides until the screen class changes.
+  const qToggle = $("#quest-toggle");
+  const qList = $("#quest-list");
+  if (qToggle && qList) {
+    const setOpen = (open: boolean) => {
+      qToggle.setAttribute("aria-expanded", String(open));
+      qList.hidden = !open;
+    };
+    const small = matchMedia("(max-width: 640px), (max-height: 480px)");
+    setOpen(!small.matches);
+    small.addEventListener("change", (e) => setOpen(!e.matches));
+    qToggle.addEventListener("click", () => setOpen(qToggle.getAttribute("aria-expanded") !== "true"));
+  }
+  renderQuest();
 
   // ---- panel ----
   let opened: { node: HTMLElement; next: Node | null; trigger: HTMLElement | null } | null = null;
@@ -95,6 +169,7 @@ function boot() {
     panel.setAttribute("aria-labelledby", `${id}-title`);
     panel.append(node);
     panel.showModal();
+    questOpened(id);
     placeClose();
     document.getElementById(`${id}-title`)?.focus();
     sync();
@@ -110,6 +185,12 @@ function boot() {
     if (location.hash) history.replaceState(null, "", location.pathname + location.search);
     trigger?.focus();
     sync();
+    if (live && pendingMsg) live.textContent = pendingMsg;
+    pendingMsg = "";
+    if (showDoneAfterClose) {
+      showDoneAfterClose = false;
+      showDone();
+    }
   });
   panel.querySelector("[data-close]")?.addEventListener("click", () => panel.close());
 
@@ -147,6 +228,7 @@ function boot() {
     applyTouch();
     const show = (on: boolean) => {
       tutorial.hidden = !on;
+      document.documentElement.classList.toggle("tutorial-open", on);
       if (!on) store.set(TUTORIAL_KEY, "1");
     };
     show(!store.get(TUTORIAL_KEY));
@@ -222,7 +304,7 @@ function boot() {
     if (shouldRun() && !raf) raf = requestAnimationFrame(frame);
   };
 
-  const shouldRun = () => !reduced && onscreen && !document.hidden && !panel.open;
+  const shouldRun = () => !reduced && onscreen && !document.hidden && !panel.open && !doneDlg?.open;
 
   function sync() {
     const run = shouldRun();
@@ -258,6 +340,7 @@ function boot() {
   draw();
   sync();
   fromHash();
+  if (shouldShowBanner(done, store.get(SEEN_KEY) === "1")) showDone();
 }
 
 boot();

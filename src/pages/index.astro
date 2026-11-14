@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import portrait from '../assets/avatar.webp';
 import { STATIONS } from '../game/world';
+import { QUEST } from '../game/quest';
 import { email, links, experience, certs, skills, stats, offDuty, description } from '../data/profile';
 
 const site = 'https://jayveecelestial.com/';
@@ -18,6 +19,18 @@ const icons: Record<string, string[]> = {
 };
 const iconPath = (rows: string[]) =>
   rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
+
+// Visible tracker text per quest id (QUEST_TEXT is screen-reader announcement text).
+const questLabels: Record<(typeof QUEST)[number], string> = {
+  work: 'Read the Quest log',
+  certs: 'Inspect the trophies',
+  contact: 'Check the mailbox',
+};
+// Break station labels after the dot so the tail never wraps alone.
+const splitLabel = (label: string): [string, string | undefined] => {
+  const [head, ...tail] = label.split(' · ');
+  return [head, tail.length ? tail.join(' · ') : undefined];
+};
 
 const twitch = offDuty.links[0];
 ---
@@ -74,7 +87,7 @@ const twitch = offDuty.links[0];
         <svg class="icon" viewBox="0 0 8 8" width="24" height="24" aria-hidden="true" focusable="false" shape-rendering="crispEdges">
           <path d={iconPath(icons[s.id])} fill="currentColor" />
         </svg>
-        <span>{s.label}</span>
+        <span>{splitLabel(s.label)[0]}{splitLabel(s.label)[1] && <> · <span class="nowrap">{splitLabel(s.label)[1]}</span></>}</span>
       </a>
     ))}
   </nav>
@@ -90,6 +103,33 @@ const twitch = offDuty.links[0];
     </p>
     <button type="button" class="btn" data-tutorial-close>Got it</button>
   </div>
+
+  <aside id="quest" hidden aria-label="Quest">
+    <button type="button" id="quest-toggle" aria-expanded="true" aria-controls="quest-list">
+      <span class="q-title">Quest</span> <span id="quest-count">0/3</span>
+      <span class="q-complete">Quest done</span>
+    </button>
+    <ol id="quest-list">
+      {QUEST.map(id => (
+        <li data-quest={id}><span class="q-box" aria-hidden="true"></span><span>{questLabels[id]}</span> <span class="q-state sr-only">to do</span></li>
+      ))}
+    </ol>
+    <button type="button" class="btn btn-small btn-alt q-reset" data-quest-reset>Play again</button>
+  </aside>
+
+  <dialog id="quest-done" aria-labelledby="quest-done-title">
+    <span class="confetti" aria-hidden="true"></span>
+    <h2 id="quest-done-title" tabindex="-1">Quest complete!</h2>
+    <p>Thanks for touring the room. Want the full story?</p>
+    <div class="q-actions">
+      <a class="btn" href="/Jayvee-Celestial-CV.pdf" download>Download CV</a>
+      <a class="btn btn-alt email-link" href="#contact" data-u={email.user} data-d={email.domain}>Email me</a>
+    </div>
+    <div class="q-actions">
+      <button type="button" class="btn btn-small btn-alt" data-quest-close>Close</button>
+      <button type="button" class="btn btn-small btn-alt" data-quest-reset>Play again</button>
+    </div>
+  </dialog>
 
   <div id="sections">
     <section id="about" class="px-panel sec">
@@ -144,7 +184,7 @@ const twitch = offDuty.links[0];
     </section>
 
     <section id="certs" class="px-panel sec">
-      <p class="kicker">Achievements {certs.length}/{certs.length}</p>
+      <p class="kicker">Trophies · <span class="nowrap">{certs.length} certs</span></p>
       <h2 id="certs-title" tabindex="-1">Certifications</h2>
       <div class="body">
         <ul class="certs">

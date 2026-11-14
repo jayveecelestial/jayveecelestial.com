@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { bubbleText } from "./render.ts";
+import { QUEST, announcement, isComplete, markDone, parseStored, shouldShowBanner } from "./quest.ts";
 import { SPRITES } from "./sprites.ts";
 import { NO_INPUT, initialState, resolveMode, update, type Input, type State } from "./state.ts";
 import { MAX_X, MIN_X, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, pickScale, stationCenter } from "./world.ts";
@@ -140,7 +141,7 @@ test("bubbleText per input mode", () => {
   assert.equal(bubbleText("work", "key"), "Press E: Quest log");
   assert.equal(bubbleText("work", "tap"), "Tap Open: Quest log");
   assert.equal(bubbleText("work", "poke"), "Tap: Quest log");
-  assert.equal(bubbleText("certs", "click"), "Click: Achievements 8/8");
+  assert.equal(bubbleText("certs", "click"), "Click: Trophies · 8 certs");
 });
 
 test("pickScale follows wrap height, camera when width is short", () => {
@@ -156,5 +157,62 @@ test("station boxes match their sprites", () => {
     assert.equal(s.w, SPRITES[s.sprite].w, s.id);
     assert.equal(s.h, SPRITES[s.sprite].h, s.id);
   }
-  assert.equal(STATIONS[2].label, "Achievements 8/8");
+  assert.equal(STATIONS[2].label, "Trophies · 8 certs");
+});
+
+test("quest markDone is idempotent and ignores unknown ids", () => {
+  const a = markDone([], "work");
+  assert.deepEqual(a, ["work"]);
+  assert.equal(markDone(a, "work"), a);
+  assert.equal(markDone(a, "about"), a);
+  assert.equal(markDone(a, ""), a);
+});
+
+test("quest completes at 3 of 3 in any order", () => {
+  let d = markDone([], "contact");
+  d = markDone(d, "work");
+  assert.equal(isComplete(d), false);
+  d = markDone(d, "certs");
+  assert.equal(isComplete(d), true);
+  assert.equal(d.length, QUEST.length);
+});
+
+test("quest storage parse rejects junk", () => {
+  assert.deepEqual(parseStored(null), []);
+  assert.deepEqual(parseStored("not json"), []);
+  assert.deepEqual(parseStored('{"work":true}'), []);
+  assert.deepEqual(parseStored('"work"'), []);
+  assert.deepEqual(parseStored('["work","hack",1,null,"work"]'), ["work"]);
+  assert.deepEqual(parseStored('["contact","work","certs"]'), ["work", "certs", "contact"]);
+});
+
+test("quest announcements", () => {
+  assert.equal(announcement(["work", "certs"], "certs"), "Quest 2 of 3: Trophies checked");
+  assert.equal(announcement(["work", "certs", "contact"], "contact"), "Quest complete");
+});
+
+test("quest counts stay right after loading an out-of-order store", () => {
+  let d = parseStored('["contact","work"]');
+  assert.deepEqual(d, ["work", "contact"]);
+  assert.equal(announcement(markDone(d, "certs"), "certs"), "Quest complete");
+  d = markDone(d, "certs");
+  assert.equal(d.length, 3);
+  assert.equal(announcement(markDone(parseStored('["contact"]'), "work"), "work"), "Quest 2 of 3: Work read");
+});
+
+test("quest can be reset and completed again", () => {
+  let d = markDone(markDone(markDone([], "work"), "certs"), "contact");
+  assert.equal(isComplete(d), true);
+  d = [];
+  assert.equal(isComplete(d), false);
+  for (const id of QUEST) d = markDone(d, id);
+  assert.equal(isComplete(d), true);
+});
+
+test("shouldShowBanner only when complete and unseen", () => {
+  const full = [...QUEST];
+  assert.equal(shouldShowBanner(full, false), true);
+  assert.equal(shouldShowBanner(full, true), false);
+  assert.equal(shouldShowBanner(["work"], false), false);
+  assert.equal(shouldShowBanner([], false), false);
 });
