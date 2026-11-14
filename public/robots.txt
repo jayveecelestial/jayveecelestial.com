@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /_vercel/
 
-Sitemap: https://jayveecelestial.com/sitemap.xml
+Sitemap: https://jayveecelestial.com/sitemap-index.xml
