@@ -1,3 +1,4 @@
+import { SIGN } from "./egg.ts";
 import type { View } from "./input.ts";
 import { PALETTE_KEYS, SPRITES } from "./sprites.ts";
 import type { State } from "./state.ts";
@@ -8,6 +9,10 @@ export interface DrawOptions {
   bubble: string | null;
   /** False = static frame (reduced motion): no blink, bob or arrow bounce. */
   animate: boolean;
+  /** SHIP IT sign is lit. */
+  lit: boolean;
+  /** Sign flickers (dim frame) this draw. */
+  buzz: boolean;
 }
 
 export interface Renderer {
@@ -27,7 +32,7 @@ const PAD_PX = 8;
 const DECOR: [string, number, number][] = [
   ["poster", 88, 48],
   ["clock", 152, 40],
-  ["neon", 312, 44],
+  ["neon", SIGN.x + SIGN.w / 2, SIGN.y + SIGN.h / 2],
 ];
 
 /** key = keyboard, tap = touchpad Open button, click = mouse in reduced motion, poke = tap on the object in reduced motion. */
@@ -37,7 +42,7 @@ const VERB: Record<BubbleMode, string> = { key: "Press E", tap: "Tap Open", clic
 
 export const bubbleText = (id: string, mode: BubbleMode): string => `${VERB[mode]}: ${stationById(id)?.label ?? ""}`;
 
-export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Renderer {
+export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement, reserveTop: () => number = () => 0): Renderer {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("no 2d context");
   const css = getComputedStyle(document.documentElement);
@@ -112,7 +117,7 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
   const resize = () => {
     dpr = window.devicePixelRatio || 1;
     const w = wrap.clientWidth * dpr;
-    scale = pickScale(wrap.clientWidth, wrap.clientHeight, dpr).scale;
+    scale = pickScale(wrap.clientWidth, wrap.clientHeight, dpr, reserveTop()).scale;
     viewW = Math.min(ROOM_W, Math.max(1, Math.floor(w / scale)));
     canvas.width = viewW * scale;
     canvas.height = ROOM_H * scale;
@@ -132,13 +137,15 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
     camX = cameraX(s.x, viewW);
     const hx = Math.round(s.x - HERO_W / 2);
     const hy = Math.round(FLOOR_Y - HERO_H - s.y);
-    const next = `${tick}|${hero}|${hf}|${hx}|${hy}|${s.facing}|${s.near}|${camX}|${o.bubble}`;
+    const next = `${tick}|${hero}|${hf}|${hx}|${hy}|${s.facing}|${s.near}|${camX}|${o.bubble}|${o.lit}|${o.buzz}`;
     if (next === sig) return;
     sig = next;
 
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, 0);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(bg, 0, 0);
+
+    if (o.lit) put(ctx, "neon_on", o.buzz ? 1 : 0, SIGN.x, SIGN.y);
 
     let tops = 0;
     for (const st of STATIONS) {

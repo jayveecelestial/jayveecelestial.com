@@ -4,7 +4,7 @@ import { bubbleText } from "./render.ts";
 import { QUEST, announcement, isComplete, markDone, parseStored, shouldShowBanner } from "./quest.ts";
 import { SPRITES } from "./sprites.ts";
 import { NO_INPUT, initialState, resolveMode, update, type Input, type State } from "./state.ts";
-import { MAX_X, MIN_X, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, pickScale, stationCenter } from "./world.ts";
+import { MAX_X, MIN_X, MIN_CSS_SCALE, MIN_VIEW_W, ROOM_H, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, pickScale, stationCenter } from "./world.ts";
 
 const DT = 1 / 60;
 const step = (s: State, i: Partial<Input>, n = 1): State => {
@@ -145,11 +145,71 @@ test("bubbleText per input mode", () => {
 });
 
 test("pickScale follows wrap height, camera when width is short", () => {
-  assert.deepEqual(pickScale(390, 432, 3), { scale: 6, camera: true });
-  assert.deepEqual(pickScale(360, 432, 3), { scale: 6, camera: true });
+  assert.deepEqual(pickScale(390, 432, 3), { scale: 4, camera: true });
+  assert.deepEqual(pickScale(360, 432, 3), { scale: 4, camera: true });
   assert.deepEqual(pickScale(1440, 803, 1), { scale: 3, camera: false });
   assert.deepEqual(pickScale(1440, 803, 2), { scale: 7, camera: false });
   assert.deepEqual(pickScale(100, 50, 1), { scale: 1, camera: true });
+});
+
+test("pickScale camera mode shrinks to show more room", () => {
+  const rows: [number, number, number, number, number][] = [
+    [360, 374, 3, 0, 4],
+    [360, 374, 2, 0, 3],
+    [400, 360, 3, 0, 4],
+    [474, 360, 3, 40, 4],
+  ];
+  for (const [w, h, dpr, top, want] of rows) assert.equal(pickScale(w, h, dpr, top).scale, want, `${w}x${h}@${dpr}`);
+});
+
+test("pickScale desktop keeps the height-fit scale", () => {
+  for (const [w, h, dpr, want] of [[1366, 700, 1, 3], [1280, 720, 2, 6], [1920, 1000, 1, 4]] as const) {
+    const r = pickScale(w, h, dpr, 60);
+    assert.deepEqual(r, { scale: want, camera: false }, `${w}x${h}@${dpr}`);
+  }
+});
+
+test("pickScale invariants", () => {
+  for (const dpr of [1, 1.5, 2, 3])
+    for (let w = 280; w <= 1500; w += 37)
+      for (let h = 200; h <= 900; h += 41)
+        for (const top of [0, 50]) {
+          const tag = `${w}x${h}@${dpr} top ${top}`;
+          const { scale, camera } = pickScale(w, h, dpr, top);
+          const s0 = Math.max(1, Math.floor((h * dpr) / ROOM_H));
+          assert.ok(scale <= s0, `${tag} above s0`);
+          assert.equal(camera, s0 * ROOM_W > w * dpr, `${tag} camera flag`);
+          if (scale > Math.ceil(dpr * MIN_CSS_SCALE)) {
+            if (camera) {
+              assert.ok((ROOM_H * scale) / dpr <= h - top, `${tag} reserve not honored`);
+              assert.ok(Math.floor((w * dpr) / scale) >= MIN_VIEW_W, `${tag} view too narrow`);
+            } else assert.equal(scale, s0, `${tag} non-camera must be s0`);
+          }
+        }
+});
+
+test("pickScale width term binds on narrow tall wraps", () => {
+  // Plenty of height, but only ~MIN_VIEW_W * 2 css px of width: scale limited by width, not height.
+  const w = MIN_VIEW_W * 2;
+  const r = pickScale(w, 3000, 1);
+  assert.equal(r.camera, true);
+  assert.equal(r.scale, 2);
+  assert.ok(r.scale < Math.floor(3000 / ROOM_H));
+  assert.ok(Math.floor(w / r.scale) >= MIN_VIEW_W);
+});
+
+test("pickScale degenerate reserve and wrap height", () => {
+  const floor = (dpr: number) => Math.ceil(dpr * MIN_CSS_SCALE);
+  // reserve taller than the wrap: clamp floor, capped by s0 (=1 here)
+  assert.deepEqual(pickScale(300, 100, 1, 500), { scale: 1, camera: true });
+  assert.equal(pickScale(300, 374, 3, 1000).scale, floor(3));
+  // empty wrap: no NaN, scale 1
+  for (const dpr of [1, 2, 3]) {
+    for (const top of [0, 40]) {
+      const r = pickScale(0, 0, dpr, top);
+      assert.deepEqual(r, { scale: 1, camera: true });
+    }
+  }
 });
 
 test("station boxes match their sprites", () => {

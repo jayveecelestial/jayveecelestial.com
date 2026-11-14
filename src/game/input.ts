@@ -1,4 +1,5 @@
 import { NO_INPUT, type Input } from "./state.ts";
+import { hitSign } from "./egg.ts";
 import { ROOM_H, hitStation } from "./world.ts";
 
 const KEYMAP: Record<string, "left" | "right" | "jump" | "act"> = {
@@ -79,7 +80,9 @@ export function createInput(
     const y = ((e.clientY - r.top) / r.height) * ROOM_H;
     keyboard = false;
     const hit = hitStation(x, y);
-    once = hit ? { ...once, target: hit.id } : { ...once, walkTo: x };
+    const poke = hitSign(x, y);
+    const merged = { ...once, poke: once.poke || poke };
+    once = hit ? { ...merged, target: hit.id } : { ...merged, walkTo: x };
   };
 
   if (keys) {

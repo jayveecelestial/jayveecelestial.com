@@ -1,13 +1,15 @@
 import { createInput } from "./input.ts";
 import { bubbleText, createRenderer } from "./render.ts";
 import { QUEST, announcement, isComplete, isQuestId, markDone, parseStored, shouldShowBanner, type QuestId } from "./quest.ts";
-import { initialState, resolveMode, update } from "./state.ts";
+import { createSound, parsePref, sfxForQuest } from "./sound.ts";
+import { NO_INPUT, initialState, resolveMode, update } from "./state.ts";
 import { stationById } from "./world.ts";
 
 const MODE_KEY = "ng-mode";
 const TUTORIAL_KEY = "ng-tutorial";
 const QUEST_KEY = "ng-quest";
 const SEEN_KEY = "ng-quest-seen";
+const SOUND_KEY = "ng-sound";
 const STEP = 1 / 60;
 
 const store = {
@@ -57,7 +59,14 @@ function boot() {
     matchMedia("(hover: none)").matches ||
     (navigator.maxTouchPoints > 0 && !matchMedia("(any-pointer: fine)").matches);
   let fontOk = false;
-  const renderer = createRenderer(canvas, wrap);
+  const hud = $("#hud");
+  // Same queries as global.css where the room is bottom-aligned; elsewhere the room is centred and the HUD floats clear of it.
+  const bottomAligned = "(max-width: 640px), (max-height: 480px) and (orientation: landscape)";
+  const renderer = createRenderer(canvas, wrap, () =>
+    matchMedia(bottomAligned).matches
+      ? Math.max(0, (hud?.getBoundingClientRect().bottom ?? 0) - wrap.getBoundingClientRect().top)
+      : 0,
+  );
   const blocked = () => panel.open || !!doneDlg?.open || (!reduced && !raf);
   const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();
@@ -65,6 +74,34 @@ function boot() {
   let raf = 0;
   let last = 0;
   let acc = 0;
+
+  // ---- sound: off until the visitor turns it on ----
+  const sfx = createSound();
+  const soundBtn = document.createElement("button");
+  soundBtn.id = "sound";
+  soundBtn.className = "btn btn-small";
+  soundBtn.type = "button";
+  soundBtn.setAttribute("aria-label", "Sound");
+  const px = (d: string) => `<path fill="currentColor" d="${d}"/>`;
+  const speaker = px("M1 5h3l3-3h1v12H7l-3-3H1z");
+  soundBtn.innerHTML =
+    `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false" shape-rendering="crispEdges">${speaker}` +
+    `<g class="snd-on">${px("M10 6h1v4h-1zM12 4h1v8h-1z")}</g>` +
+    `<g class="snd-off">${px("M10 6h1v1h-1zM11 7h1v1h-1zM12 8h1v1h-1zM13 9h1v1h-1zM13 6h1v1h-1zM12 7h1v1h-1zM11 8h1v1h-1zM10 9h1v1h-1z")}</g></svg>`;
+  const setSound = (on: boolean, gesture = false) => {
+    soundBtn.setAttribute("aria-pressed", String(on));
+    if (on) sfx.enable(gesture);
+    else sfx.disable();
+  };
+  setSound(parsePref(store.get(SOUND_KEY)));
+  soundBtn.addEventListener("click", () => {
+    const on = soundBtn.getAttribute("aria-pressed") !== "true";
+    store.set(SOUND_KEY, on ? "on" : "off");
+    setSound(on, true);
+  });
+  const help = $("#help");
+  if (help?.parentElement) help.parentElement.insertBefore(soundBtn, help);
+  else hud?.append(soundBtn);
 
   // ---- quest: open Work, Trophies and Mailbox ----
   const tracker = $("#quest");
@@ -96,15 +133,18 @@ function boot() {
   };
   doneDlg?.addEventListener("close", () => sync());
 
+  /** Returns the quest cue when this open finished a task, so the caller plays it instead of the open cue. */
   const questOpened = (id: string) => {
-    if (!isQuestId(id)) return;
+    if (!isQuestId(id)) return null;
     const next = markDone(done, id);
-    if (next === done) return;
+    if (next === done) return null;
+    const cue = sfxForQuest(done, id);
     done = next;
     store.set(QUEST_KEY, JSON.stringify(done));
     renderQuest();
     pendingMsg = announcement(done, id);
     if (isComplete(done)) showDoneAfterClose = true;
+    return cue;
   };
 
   // Back to the game: focus on body so walking works at once; the close event resumes the loop.
@@ -160,7 +200,7 @@ function boot() {
     panel.setAttribute("aria-labelledby", `${id}-title`);
     panel.append(node);
     panel.showModal();
-    questOpened(id);
+    sfx.play(questOpened(id) ?? "open");
     placeClose();
     document.getElementById(`${id}-title`)?.focus();
     sync();
@@ -228,9 +268,20 @@ function boot() {
   }
 
   // ---- loop ----
+  /** performance.now() when the sign lit, for the short buzz. */
+  let litAt = 0;
+  const BUZZ_MS = 1000;
+  const BUZZ_STEP_MS = 80;
+  const buzzing = () => {
+    if (reduced || !state.lit) return false;
+    const since = performance.now() - litAt;
+    return since < BUZZ_MS && Math.floor(since / BUZZ_STEP_MS) % 2 === 1;
+  };
   const draw = () =>
     renderer.draw(state, {
       animate: !reduced,
+      lit: state.lit,
+      buzz: buzzing(),
       bubble:
         fontOk && state.near && !panel.open
           ? bubbleText(state.near, reduced ? (touch ? "poke" : "click") : touch ? "tap" : "key")
@@ -248,11 +299,29 @@ function boot() {
     live.textContent = `${stationById(state.near)?.label}. Press E to open.`;
   };
 
+  /** Announce once when the sign flips to lit. */
+  let wasLit = state.lit;
+  const noteLit = () => {
+    if (state.lit === wasLit) return;
+    wasLit = state.lit;
+    litAt = performance.now();
+    if (live && state.lit) live.textContent = "SHIP IT sign lit";
+  };
+
   if (reduced) {
     // One static frame; pointer picks open instantly (input.ts has queued the target).
+    // No loop, so state.t is frozen: advance it by real time on each poke so 3 taps in 2 s still count.
+    let lastPoke = performance.now();
     canvas.addEventListener("pointerdown", () => {
-      const t = input.poll().target;
-      if (t) openStation(t);
+      const i = input.poll();
+      if (i.target) openStation(i.target);
+      if (i.poke) {
+        const now = performance.now();
+        state = update(state, { ...NO_INPUT, poke: true }, (now - lastPoke) / 1000);
+        lastPoke = now;
+        noteLit();
+        draw();
+      }
     });
   }
 
@@ -283,9 +352,12 @@ function boot() {
     acc += Math.min(0.1, (now - last) / 1000);
     last = now;
     while (acc >= STEP) {
+      const grounded = state.y === 0;
       state = update(state, input.poll(), STEP);
+      if (grounded && state.y > 0) sfx.play("jump");
       acc -= STEP;
       announce();
+      noteLit();
       if (state.open) {
         openStation(state.open);
         break;
@@ -315,10 +387,13 @@ function boot() {
     onscreen = e.isIntersecting;
     sync();
   }).observe(wrap);
-  new ResizeObserver(() => {
+  const resizeObs = new ResizeObserver(() => {
     renderer.resize();
     draw();
-  }).observe(wrap);
+  });
+  // HUD height changes (font load, wrapping) move reserveTop; canvas resizes never change the HUD, so no loop.
+  resizeObs.observe(wrap);
+  if (hud) resizeObs.observe(hud);
   // The bubble waits for its font so it never flashes in the fallback.
   Promise.resolve(document.fonts?.load('700 14px "Red Hat Display"'))
     .catch(() => {})
