@@ -1,7 +1,7 @@
 import { createInput } from "./input.ts";
 import { bubbleText, createRenderer } from "./render.ts";
 import { QUEST, announcement, isComplete, isQuestId, markDone, parseStored, shouldShowBanner, type QuestId } from "./quest.ts";
-import { initialState, resolveMode, update } from "./state.ts";
+import { NO_INPUT, initialState, resolveMode, update } from "./state.ts";
 import { stationById } from "./world.ts";
 
 const MODE_KEY = "ng-mode";
@@ -235,9 +235,20 @@ function boot() {
   }
 
   // ---- loop ----
+  /** performance.now() when the sign lit, for the short buzz. */
+  let litAt = 0;
+  const BUZZ_MS = 1000;
+  const BUZZ_STEP_MS = 80;
+  const buzzing = () => {
+    if (reduced || !state.lit) return false;
+    const since = performance.now() - litAt;
+    return since < BUZZ_MS && Math.floor(since / BUZZ_STEP_MS) % 2 === 1;
+  };
   const draw = () =>
     renderer.draw(state, {
       animate: !reduced,
+      lit: state.lit,
+      buzz: buzzing(),
       bubble:
         fontOk && state.near && !panel.open
           ? bubbleText(state.near, reduced ? (touch ? "poke" : "click") : touch ? "tap" : "key")
@@ -255,11 +266,29 @@ function boot() {
     live.textContent = `${stationById(state.near)?.label}. Press E to open.`;
   };
 
+  /** Announce once when the sign flips to lit. */
+  let wasLit = state.lit;
+  const noteLit = () => {
+    if (state.lit === wasLit) return;
+    wasLit = state.lit;
+    litAt = performance.now();
+    if (live && state.lit) live.textContent = "SHIP IT sign lit";
+  };
+
   if (reduced) {
     // One static frame; pointer picks open instantly (input.ts has queued the target).
+    // No loop, so state.t is frozen: advance it by real time on each poke so 3 taps in 2 s still count.
+    let lastPoke = performance.now();
     canvas.addEventListener("pointerdown", () => {
-      const t = input.poll().target;
-      if (t) openStation(t);
+      const i = input.poll();
+      if (i.target) openStation(i.target);
+      if (i.poke) {
+        const now = performance.now();
+        state = update(state, { ...NO_INPUT, poke: true }, (now - lastPoke) / 1000);
+        lastPoke = now;
+        noteLit();
+        draw();
+      }
     });
   }
 
@@ -293,6 +322,7 @@ function boot() {
       state = update(state, input.poll(), STEP);
       acc -= STEP;
       announce();
+      noteLit();
       if (state.open) {
         openStation(state.open);
         break;
