@@ -200,15 +200,6 @@ test("quest counts stay right after loading an out-of-order store", () => {
   assert.equal(announcement(markDone(parseStored('["contact"]'), "work"), "work"), "Quest 2 of 3: Work read");
 });
 
-test("quest can be reset and completed again", () => {
-  let d = markDone(markDone(markDone([], "work"), "certs"), "contact");
-  assert.equal(isComplete(d), true);
-  d = [];
-  assert.equal(isComplete(d), false);
-  for (const id of QUEST) d = markDone(d, id);
-  assert.equal(isComplete(d), true);
-});
-
 test("shouldShowBanner only when complete and unseen", () => {
   const full = [...QUEST];
   assert.equal(shouldShowBanner(full, false), true);

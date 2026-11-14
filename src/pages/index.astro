@@ -114,7 +114,6 @@ const twitch = offDuty.links[0];
         <li data-quest={id}><span class="q-box" aria-hidden="true"></span><span>{questLabels[id]}</span> <span class="q-state sr-only">to do</span></li>
       ))}
     </ol>
-    <button type="button" class="btn btn-small btn-alt q-reset" data-quest-reset>Play again</button>
   </aside>
 
   <dialog id="quest-done" aria-labelledby="quest-done-title">
@@ -126,8 +125,7 @@ const twitch = offDuty.links[0];
       <a class="btn btn-alt email-link" href="#contact" data-u={email.user} data-d={email.domain}>Email me</a>
     </div>
     <div class="q-actions">
-      <button type="button" class="btn btn-small btn-alt" data-quest-close>Close</button>
-      <button type="button" class="btn btn-small btn-alt" data-quest-reset>Play again</button>
+      <button type="button" class="btn btn-small btn-alt" data-quest-explore>Explore</button>
     </div>
   </dialog>
 
