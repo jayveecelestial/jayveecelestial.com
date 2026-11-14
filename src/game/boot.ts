@@ -1,6 +1,7 @@
 import { createInput } from "./input.ts";
 import { bubbleText, createRenderer } from "./render.ts";
 import { QUEST, announcement, isComplete, isQuestId, markDone, parseStored, shouldShowBanner, type QuestId } from "./quest.ts";
+import { createSound, parsePref, sfxForQuest } from "./sound.ts";
 import { NO_INPUT, initialState, resolveMode, update } from "./state.ts";
 import { stationById } from "./world.ts";
 
@@ -8,6 +9,7 @@ const MODE_KEY = "ng-mode";
 const TUTORIAL_KEY = "ng-tutorial";
 const QUEST_KEY = "ng-quest";
 const SEEN_KEY = "ng-quest-seen";
+const SOUND_KEY = "ng-sound";
 const STEP = 1 / 60;
 
 const store = {
@@ -73,6 +75,34 @@ function boot() {
   let last = 0;
   let acc = 0;
 
+  // ---- sound: off until the visitor turns it on ----
+  const sfx = createSound();
+  const soundBtn = document.createElement("button");
+  soundBtn.id = "sound";
+  soundBtn.className = "btn btn-small";
+  soundBtn.type = "button";
+  soundBtn.setAttribute("aria-label", "Sound");
+  const px = (d: string) => `<path fill="currentColor" d="${d}"/>`;
+  const speaker = px("M1 5h3l3-3h1v12H7l-3-3H1z");
+  soundBtn.innerHTML =
+    `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false" shape-rendering="crispEdges">${speaker}` +
+    `<g class="snd-on">${px("M10 6h1v4h-1zM12 4h1v8h-1z")}</g>` +
+    `<g class="snd-off">${px("M10 6h1v1h-1zM11 7h1v1h-1zM12 8h1v1h-1zM13 9h1v1h-1zM13 6h1v1h-1zM12 7h1v1h-1zM11 8h1v1h-1zM10 9h1v1h-1z")}</g></svg>`;
+  const setSound = (on: boolean, gesture = false) => {
+    soundBtn.setAttribute("aria-pressed", String(on));
+    if (on) sfx.enable(gesture);
+    else sfx.disable();
+  };
+  setSound(parsePref(store.get(SOUND_KEY)));
+  soundBtn.addEventListener("click", () => {
+    const on = soundBtn.getAttribute("aria-pressed") !== "true";
+    store.set(SOUND_KEY, on ? "on" : "off");
+    setSound(on, true);
+  });
+  const help = $("#help");
+  if (help?.parentElement) help.parentElement.insertBefore(soundBtn, help);
+  else hud?.append(soundBtn);
+
   // ---- quest: open Work, Trophies and Mailbox ----
   const tracker = $("#quest");
   const doneDlg = $<HTMLDialogElement>("#quest-done");
@@ -103,15 +133,18 @@ function boot() {
   };
   doneDlg?.addEventListener("close", () => sync());
 
+  /** Returns the quest cue when this open finished a task, so the caller plays it instead of the open cue. */
   const questOpened = (id: string) => {
-    if (!isQuestId(id)) return;
+    if (!isQuestId(id)) return null;
     const next = markDone(done, id);
-    if (next === done) return;
+    if (next === done) return null;
+    const cue = sfxForQuest(done, id);
     done = next;
     store.set(QUEST_KEY, JSON.stringify(done));
     renderQuest();
     pendingMsg = announcement(done, id);
     if (isComplete(done)) showDoneAfterClose = true;
+    return cue;
   };
 
   // Back to the game: focus on body so walking works at once; the close event resumes the loop.
@@ -167,7 +200,7 @@ function boot() {
     panel.setAttribute("aria-labelledby", `${id}-title`);
     panel.append(node);
     panel.showModal();
-    questOpened(id);
+    sfx.play(questOpened(id) ?? "open");
     placeClose();
     document.getElementById(`${id}-title`)?.focus();
     sync();
@@ -319,7 +352,9 @@ function boot() {
     acc += Math.min(0.1, (now - last) / 1000);
     last = now;
     while (acc >= STEP) {
+      const grounded = state.y === 0;
       state = update(state, input.poll(), STEP);
+      if (grounded && state.y > 0) sfx.play("jump");
       acc -= STEP;
       announce();
       noteLit();
