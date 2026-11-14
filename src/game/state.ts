@@ -1,3 +1,4 @@
+import { pokeSign, underSign } from "./egg.ts";
 import { clampX, nearestStation, stationById, stationCenter } from "./world.ts";
 
 export const SPEED = 72;
@@ -15,6 +16,8 @@ export interface Input {
   target: string | null;
   /** Pointer picked empty floor: walk to this x. */
   walkTo: number | null;
+  /** Tap landed on the SHIP IT sign. */
+  poke: boolean;
 }
 
 export interface State {
@@ -35,9 +38,13 @@ export interface State {
   open: string | null;
   /** Seconds elapsed, drives animation. */
   t: number;
+  /** Times (s) of recent sign pokes. */
+  signHits: readonly number[];
+  /** SHIP IT sign found; sticky for the visit. */
+  lit: boolean;
 }
 
-export const NO_INPUT: Input = { left: false, right: false, jump: false, act: false, target: null, walkTo: null };
+export const NO_INPUT: Input = { left: false, right: false, jump: false, act: false, target: null, walkTo: null, poke: false };
 
 export const initialState = (): State => ({
   x: 40,
@@ -50,6 +57,8 @@ export const initialState = (): State => ({
   near: nearestStation(40)?.id ?? null,
   open: null,
   t: 0,
+  signHits: [],
+  lit: false,
 });
 
 export function update(s: State, input: Input, dt: number): State {
@@ -88,7 +97,8 @@ export function update(s: State, input: Input, dt: number): State {
 
   let y = s.y;
   let vy = s.vy;
-  if (input.jump && y === 0) vy = JUMP_V;
+  const jumped = input.jump && y === 0;
+  if (jumped) vy = JUMP_V;
   if (vy !== 0 || y > 0) {
     vy -= GRAVITY * dt;
     y += vy * dt;
@@ -101,7 +111,16 @@ export function update(s: State, input: Input, dt: number): State {
   const near = nearestStation(x)?.id ?? null;
   if (input.act && near && !open) open = near;
 
-  return { x, y, vy, facing, walking: x !== s.x, target, goal, near, open, t: s.t + dt };
+  const t = s.t + dt;
+  let signHits = s.signHits;
+  let lit = s.lit;
+  if (!lit && (input.poke || (jumped && underSign(x)))) {
+    const r = pokeSign(signHits, t);
+    signHits = r.hits;
+    lit = r.lit;
+  }
+
+  return { x, y, vy, facing, walking: x !== s.x, target, goal, near, open, t, signHits, lit };
 }
 
 export type Mode = "plain" | "play";
