@@ -359,7 +359,16 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
   #touchpad button:active { transform: translateY(2px); }
   /* Close mirrors the Open button: fixed bottom centre, same size. --pad-w is the touchpad width. */
   #panel { --pad-w: 100vw; --open-w: calc((var(--pad-w) - 2.5rem) * 1.4 / 3.4 - 8px); }
-  dialog#panel { padding-bottom: var(--close-pad, calc(5rem + env(safe-area-inset-bottom))); }
+  /* Dialog does not scroll: the moved-in section does, and ends 8px above Close. Below it, bare paper holds Close. */
+  dialog#panel { padding: 0; overflow: hidden; }
+  dialog#panel .sec {
+    position: absolute;
+    inset: env(safe-area-inset-top, 0px) 0 var(--scroll-bottom, calc(max(0.5rem, env(safe-area-inset-bottom)) + 64px)) 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 1rem 1.5rem;
+  }
   #panel .close {
     position: fixed;
     left: var(--close-x, calc(50% - var(--open-w) / 2));
