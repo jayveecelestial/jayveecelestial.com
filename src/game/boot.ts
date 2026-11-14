@@ -66,6 +66,22 @@ function boot() {
   // ---- panel ----
   let opened: { node: HTMLElement; next: Node | null; trigger: HTMLElement | null } | null = null;
 
+  /** Phone Close sits exactly on the Open button. No touchpad (reduced motion): CSS falls back to bottom centre. */
+  const placeClose = () => {
+    const r = $("#touchpad [data-act]")?.getBoundingClientRect();
+    const st = panel.style;
+    if (!panel.open || !r || !r.width) {
+      for (const k of ["x", "y", "w", "h", "pad"]) st.removeProperty(`--close-${k}`);
+      return;
+    }
+    st.setProperty("--close-x", `${r.left}px`);
+    st.setProperty("--close-y", `${r.top}px`);
+    st.setProperty("--close-w", `${r.width}px`);
+    st.setProperty("--close-h", `${r.height}px`);
+    st.setProperty("--close-pad", `${window.innerHeight - r.top + 16}px`);
+  };
+  window.addEventListener("resize", placeClose);
+
   /** `from` = the nav link that opened it; focus returns there on close. Game opens leave focus alone. */
   const openStation = (id: string, from: HTMLElement | null = null) => {
     const node = document.getElementById(id);
@@ -78,6 +94,7 @@ function boot() {
     panel.setAttribute("aria-labelledby", `${id}-title`);
     panel.append(node);
     panel.showModal();
+    placeClose();
     document.getElementById(`${id}-title`)?.focus();
     sync();
   };
@@ -86,6 +103,7 @@ function boot() {
     if (!opened) return;
     const { node, next, trigger } = opened;
     opened = null;
+    placeClose();
     $("#sections")?.insertBefore(node, next);
     panel.removeAttribute("aria-labelledby");
     if (location.hash) history.replaceState(null, "", location.pathname + location.search);

@@ -76,7 +76,7 @@ p { margin: 0 0 1rem; }
 a { color: var(--lnk); text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
 canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
-img { image-rendering: pixelated; max-width: 100%; height: auto; }
+img { max-width: 100%; height: auto; }
 
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 h2[tabindex="-1"]:focus { outline: none; }
@@ -170,6 +170,7 @@ main {
 #tutorial { padding: 1.25rem; }
 #tutorial h2 { margin-bottom: 0.75rem; }
 #panel .close { position: sticky; top: 0.5rem; z-index: 2; display: flex; margin: 0.5rem 0 0.5rem auto; }
+#panel .close .lbl { display: none; }
 #panel:not([open]) { display: none; }
 
 /* ---------- Sections (plain / no-JS layout) ---------- */
@@ -195,6 +196,7 @@ main {
   background: var(--bg);
   box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge);
   margin: 4px;
+  object-fit: cover;
 }
 .role { margin: 0.25rem 0 0; font: 600 1.15rem/1.3 var(--display); color: var(--fg-muted); }
 
@@ -331,14 +333,14 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
 /* ---------- Touch controls: game mode on phones / coarse pointers ---------- */
 @media (max-width: 640px), (pointer: coarse) {
   html.game main { grid-template-rows: minmax(0, 1fr) auto auto; }
-  html.game #touchpad { grid-row: 2; }
-  html.game #stations { grid-row: 3; }
+  html.game #stations { grid-row: 2; }
+  html.game #touchpad { grid-row: 3; }
   html.game #touchpad {
     display: grid;
     grid-template-columns: 1fr 1.4fr 1fr;
     gap: 0.5rem;
     grid-column: 1;
-    padding: 0.5rem 0.75rem 0;
+    padding: 0.5rem 0.75rem max(0.5rem, env(safe-area-inset-bottom));
     background: var(--bg);
   }
   #touchpad button {
@@ -355,6 +357,25 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
     box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25);
   }
   #touchpad button:active { transform: translateY(2px); }
+  /* Close mirrors the Open button: fixed bottom centre, same size. --pad-w is the touchpad width. */
+  #panel { --pad-w: 100vw; --open-w: calc((var(--pad-w) - 2.5rem) * 1.4 / 3.4 - 8px); }
+  dialog#panel { padding-bottom: var(--close-pad, calc(5rem + env(safe-area-inset-bottom))); }
+  #panel .close {
+    position: fixed;
+    left: var(--close-x, calc(50% - var(--open-w) / 2));
+    top: var(--close-y, auto);
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    margin: 0;
+    z-index: 3;
+    width: var(--close-w, var(--open-w));
+    height: var(--close-h, 56px);
+    min-height: 56px;
+    justify-content: center;
+    align-items: center;
+    font: 700 1.25rem var(--display);
+  }
+  #panel .close .x { display: none; }
+  #panel .close .lbl { display: inline; }
 }
 
 /* ---------- Narrow screens ---------- */
@@ -376,9 +397,8 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
   }
   html.game main { grid-template-rows: minmax(220px, 1fr) auto auto; }
   html.game #stage-wrap { grid-row: 1; }
-  html.game #touchpad { grid-row: 2; }
   html.game #stations {
-    grid-row: 3;
+    grid-row: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.35rem;
@@ -410,7 +430,8 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
     overflow-y: auto;
     padding: 0.5rem;
   }
-  html.game #touchpad { grid-row: 2; grid-column: 2; padding-bottom: 0.5rem; }
+  html.game #touchpad { grid-row: 2; grid-column: 2; }
+  #panel { --pad-w: max(15rem, 36vw); }
   html.game #hud { grid-row: 1; grid-column: 1; }
   #panel { inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; box-shadow: none; padding: 0 1rem 1rem; }
   html.game .station { flex: none; min-width: 0; padding: 0.35rem 0.25rem; font-size: 0.85rem; }
@@ -427,4 +448,4 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
   /* No game loop: the buttons would do nothing. Empty auto row collapses to 0. */
   html.game #touchpad { display: none; }
 }
-.lost .hero { display: block; margin: 0 0 1rem; }
+.lost .hero { image-rendering: pixelated; display: block; margin: 0 0 1rem; }

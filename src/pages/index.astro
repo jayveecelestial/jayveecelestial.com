@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import portrait from '../assets/jayvee-pixel.png';
+import portrait from '../assets/avatar.webp';
 import { STATIONS } from '../game/world';
 import { email, links, experience, certs, skills, stats, offDuty, description } from '../data/profile';
 
@@ -96,7 +96,7 @@ const twitch = offDuty.links[0];
       <p class="kicker">Player 1</p>
       <h2 id="about-title" tabindex="-1">About</h2>
       <div class="card">
-        <Image src={portrait} alt="Pixel portrait of Jayvee" width={144} height={144} format="png" class="portrait" loading="eager" />
+        <Image src={portrait} alt="Photo of Jayvee Celestial" width={192} height={192} format="webp" class="portrait" loading="eager" />
         <div class="card-body">
           <h1>Jayvee Celestial</h1>
           <p class="role">Senior DevOps Engineer</p>
@@ -197,7 +197,7 @@ const twitch = offDuty.links[0];
   </div>
 
   <dialog id="panel">
-    <button type="button" class="btn btn-small close" data-close aria-label="Close">X</button>
+    <button type="button" class="btn btn-small close" data-close aria-label="Close"><span class="x" aria-hidden="true">X</span><span class="lbl" aria-hidden="true">Close</span></button>
   </dialog>
 
   <div id="live" class="sr-only" aria-live="polite"></div>
