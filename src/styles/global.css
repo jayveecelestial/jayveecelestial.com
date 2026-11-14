@@ -362,13 +362,11 @@ html.tutorial-open #quest { display: none !important; }
   cursor: pointer;
 }
 #quest-count { color: var(--accent); }
-.q-complete, .q-reset { display: none; }
+.q-complete { display: none; }
 #quest.complete .q-complete { display: inline; color: var(--teal); }
 #quest.complete .q-title { display: none; }
 #quest.complete .q-complete::before { content: "\2713 "; }
 #quest.complete #quest-count { display: none; }
-#quest.complete .q-reset { display: inline-flex; margin: 0 0.75rem 0.6rem; }
-#quest-toggle[aria-expanded="false"] ~ .q-reset { display: none !important; }
 #quest-list { list-style: none; margin: 0; padding: 0 0.75rem 0.6rem; }
 #quest-list[hidden] { display: none; }
 #quest-list li { display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0; }

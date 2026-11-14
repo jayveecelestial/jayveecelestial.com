@@ -107,20 +107,11 @@ function boot() {
     if (isComplete(done)) showDoneAfterClose = true;
   };
 
-  doneDlg?.querySelectorAll("[data-quest-close]").forEach((b) => b.addEventListener("click", () => doneDlg.close()));
-  document.querySelectorAll<HTMLElement>("[data-quest-reset]").forEach((btn) =>
-    btn.addEventListener("click", () => {
-      doneDlg?.close();
-      done = [];
-      showDoneAfterClose = false;
-      pendingMsg = "";
-      store.set(QUEST_KEY, "[]");
-      store.set(SEEN_KEY, "0");
-      renderQuest();
-      // The tracker's own button hides once reset; keep focus on a live control.
-      if (tracker?.contains(btn)) $("#quest-toggle")?.focus();
-    }),
-  );
+  // Back to the game: focus on body so walking works at once; the close event resumes the loop.
+  doneDlg?.querySelector("[data-quest-explore]")?.addEventListener("click", () => {
+    doneDlg.close();
+    (document.activeElement as HTMLElement | null)?.blur();
+  });
 
   // Tracker: collapsed on small screens, open otherwise; the toggle overrides until the screen class changes.
   const qToggle = $("#quest-toggle");
