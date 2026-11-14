@@ -57,7 +57,14 @@ function boot() {
     matchMedia("(hover: none)").matches ||
     (navigator.maxTouchPoints > 0 && !matchMedia("(any-pointer: fine)").matches);
   let fontOk = false;
-  const renderer = createRenderer(canvas, wrap);
+  const hud = $("#hud");
+  // Same queries as global.css where the room is bottom-aligned; elsewhere the room is centred and the HUD floats clear of it.
+  const bottomAligned = "(max-width: 640px), (max-height: 480px) and (orientation: landscape)";
+  const renderer = createRenderer(canvas, wrap, () =>
+    matchMedia(bottomAligned).matches
+      ? Math.max(0, (hud?.getBoundingClientRect().bottom ?? 0) - wrap.getBoundingClientRect().top)
+      : 0,
+  );
   const blocked = () => panel.open || !!doneDlg?.open || (!reduced && !raf);
   const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();
@@ -315,10 +322,13 @@ function boot() {
     onscreen = e.isIntersecting;
     sync();
   }).observe(wrap);
-  new ResizeObserver(() => {
+  const resizeObs = new ResizeObserver(() => {
     renderer.resize();
     draw();
-  }).observe(wrap);
+  });
+  // HUD height changes (font load, wrapping) move reserveTop; canvas resizes never change the HUD, so no loop.
+  resizeObs.observe(wrap);
+  if (hud) resizeObs.observe(hud);
   // The bubble waits for its font so it never flashes in the fallback.
   Promise.resolve(document.fonts?.load('700 14px "Red Hat Display"'))
     .catch(() => {})

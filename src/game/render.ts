@@ -37,7 +37,7 @@ const VERB: Record<BubbleMode, string> = { key: "Press E", tap: "Tap Open", clic
 
 export const bubbleText = (id: string, mode: BubbleMode): string => `${VERB[mode]}: ${stationById(id)?.label ?? ""}`;
 
-export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Renderer {
+export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement, reserveTop: () => number = () => 0): Renderer {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("no 2d context");
   const css = getComputedStyle(document.documentElement);
@@ -112,7 +112,7 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
   const resize = () => {
     dpr = window.devicePixelRatio || 1;
     const w = wrap.clientWidth * dpr;
-    scale = pickScale(wrap.clientWidth, wrap.clientHeight, dpr).scale;
+    scale = pickScale(wrap.clientWidth, wrap.clientHeight, dpr, reserveTop()).scale;
     viewW = Math.min(ROOM_W, Math.max(1, Math.floor(w / scale)));
     canvas.width = viewW * scale;
     canvas.height = ROOM_H * scale;
