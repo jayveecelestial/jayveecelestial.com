@@ -25,7 +25,7 @@ export type CvDeps = {
   secret: string | undefined;
   clientAddress: string | undefined;
   verify: (input: { token: string; secret: string; remoteip?: string; expect?: Expect }) => Promise<Verdict>;
-  loadPdf: (source: PdfSource) => Promise<BodyInit | null>;
+  loadPdf: (source: PdfSource, request: Request) => Promise<BodyInit | null>;
 };
 
 export const fail = (status: number, message: string, extra: Record<string, string> = {}) =>
@@ -69,7 +69,7 @@ export async function handleCv(request: Request, deps: CvDeps): Promise<Response
 
   let pdf: BodyInit | null;
   try {
-    pdf = await deps.loadPdf(source);
+    pdf = await deps.loadPdf(source, request);
   } catch {
     pdf = null;
   }
