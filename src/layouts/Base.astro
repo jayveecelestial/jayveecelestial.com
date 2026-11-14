@@ -32,6 +32,7 @@ const { title, description, skip = false } = Astro.props;
 </head>
 <body>
   {skip && <a class="skip" href="/?view=plain#about">Skip to plain CV</a>}
+  <slot name="top" />
   <main>
     <slot />
   </main>
