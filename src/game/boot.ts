@@ -71,14 +71,15 @@ function boot() {
     const r = $("#touchpad [data-act]")?.getBoundingClientRect();
     const st = panel.style;
     if (!panel.open || !r || !r.width) {
-      for (const k of ["x", "y", "w", "h", "pad"]) st.removeProperty(`--close-${k}`);
+      for (const k of ["x", "y", "w", "h"]) st.removeProperty(`--close-${k}`);
+      st.removeProperty("--scroll-bottom");
       return;
     }
     st.setProperty("--close-x", `${r.left}px`);
     st.setProperty("--close-y", `${r.top}px`);
     st.setProperty("--close-w", `${r.width}px`);
     st.setProperty("--close-h", `${r.height}px`);
-    st.setProperty("--close-pad", `${window.innerHeight - r.top + 16}px`);
+    st.setProperty("--scroll-bottom", `${window.innerHeight - r.top + 8}px`);
   };
   window.addEventListener("resize", placeClose);
 
