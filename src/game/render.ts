@@ -144,7 +144,7 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
     for (const st of STATIONS) {
       const spr = dims(st.sprite);
       const cx = stationCenter(st);
-      const y = st.id === "about" ? FLOOR_Y - spr.height - 56 : FLOOR_Y - spr.height;
+      const y = FLOOR_Y - (st.lift ?? 0) - spr.height;
       put(ctx, st.sprite, tick, cx - spr.width / 2, y);
       if (st.id === s.near) {
         // Bobbing arrow above the nearest station, drawn after it so it shows.

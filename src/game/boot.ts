@@ -173,14 +173,12 @@ function boot() {
     btn.addEventListener("mousedown", (e) => e.preventDefault());
     btn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
-      if (blocked()) return;
+      if (reduced || blocked()) return;
       if (dir) {
         btn.setPointerCapture(e.pointerId);
         input.press(dir, true);
       } else if (!state.near) {
         if (live) live.textContent = "Walk to an object";
-      } else if (reduced) {
-        openStation(state.near);
       } else {
         input.act();
       }

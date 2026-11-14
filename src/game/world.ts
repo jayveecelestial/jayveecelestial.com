@@ -1,3 +1,5 @@
+import { certs } from "../data/profile.ts";
+
 export const ROOM_W = 384;
 export const ROOM_H = 216;
 export const FLOOR_Y = 184;
@@ -14,18 +16,18 @@ export interface Station {
   w: number;
   label: string;
   sprite: string;
-  /** Sprite height, and px it hangs above the floor line (wall decor). */
+  /** Station width equals its sprite width. Sprite height, and px it hangs above the floor line (wall decor). */
   h: number;
   lift?: number;
 }
 
 export const STATIONS: readonly Station[] = [
-  { id: "about", x: 20, w: 32, label: "Player card", sprite: "frame", h: 28, lift: 56 },
-  { id: "work", x: 72, w: 40, label: "Quest log", sprite: "rack", h: 56 },
-  { id: "certs", x: 130, w: 48, label: "Achievements 8/8", sprite: "shelf", h: 44 },
-  { id: "tools", x: 194, w: 56, label: "Inventory", sprite: "bench", h: 40 },
+  { id: "about", x: 24, w: 24, label: "Player card", sprite: "frame", h: 28, lift: 56 },
+  { id: "work", x: 76, w: 32, label: "Quest log", sprite: "rack", h: 56 },
+  { id: "certs", x: 130, w: 48, label: `Achievements ${certs.length}/${certs.length}`, sprite: "shelf", h: 44 },
+  { id: "tools", x: 198, w: 48, label: "Inventory", sprite: "bench", h: 40 },
   { id: "off-duty", x: 262, w: 64, label: "Off duty", sprite: "couch", h: 40 },
-  { id: "contact", x: 340, w: 28, label: "Mailbox", sprite: "mailbox", h: 40 },
+  { id: "contact", x: 342, w: 24, label: "Mailbox", sprite: "mailbox", h: 40 },
 ];
 
 export const clampX = (x: number): number => Math.min(MAX_X, Math.max(MIN_X, x));

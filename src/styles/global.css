@@ -424,5 +424,7 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
     scroll-behavior: auto !important;
   }
   .btn:active { transform: none; }
+  /* No game loop: the buttons would do nothing. Empty auto row collapses to 0. */
+  html.game #touchpad { display: none; }
 }
 .lost .hero { display: block; margin: 0 0 1rem; }

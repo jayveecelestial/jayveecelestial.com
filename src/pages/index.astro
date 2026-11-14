@@ -19,7 +19,6 @@ const icons: Record<string, string[]> = {
 const iconPath = (rows: string[]) =>
   rows.flatMap((r, y) => [...r].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
 
-
 const twitch = offDuty.links[0];
 ---
 
@@ -145,7 +144,7 @@ const twitch = offDuty.links[0];
     </section>
 
     <section id="certs" class="px-panel sec">
-      <p class="kicker">Achievements 8/8</p>
+      <p class="kicker">Achievements {certs.length}/{certs.length}</p>
       <h2 id="certs-title" tabindex="-1">Certifications</h2>
       <div class="body">
         <ul class="certs">

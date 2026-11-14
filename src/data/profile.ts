@@ -75,7 +75,7 @@ export const description = "Senior DevOps engineer in Riyadh. I build and run Op
 
 export const stats = [
   { value: "5+ yrs", label: "DevOps" },
-  { value: "8", label: "certs" },
+  { value: String(certs.length), label: "certs" },
   { value: "eMcREY", label: "Current" },
 ];
 

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { bubbleText } from "./render.ts";
+import { SPRITES } from "./sprites.ts";
 import { NO_INPUT, initialState, resolveMode, update, type Input, type State } from "./state.ts";
 import { MAX_X, MIN_X, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, pickScale, stationCenter } from "./world.ts";
 
@@ -26,9 +27,10 @@ test("nearestStation boundaries", () => {
   assert.equal(nearestStation(about.x - 10)?.id, "about");
   assert.equal(nearestStation(about.x - 10.5), null);
   assert.equal(nearestStation(MIN_X), null);
-  // reach overlaps: the closer centre wins
-  assert.equal(nearestStation(122)?.id, "work");
-  assert.equal(nearestStation(124)?.id, "certs");
+  // work reach ends at 118, certs reach starts at 120
+  assert.equal(nearestStation(118)?.id, "work");
+  assert.equal(nearestStation(119), null);
+  assert.equal(nearestStation(120)?.id, "certs");
   for (const s of STATIONS) assert.equal(nearestStation(stationCenter(s))?.id, s.id);
 });
 
@@ -147,4 +149,12 @@ test("pickScale follows wrap height, camera when width is short", () => {
   assert.deepEqual(pickScale(1440, 803, 1), { scale: 3, camera: false });
   assert.deepEqual(pickScale(1440, 803, 2), { scale: 7, camera: false });
   assert.deepEqual(pickScale(100, 50, 1), { scale: 1, camera: true });
+});
+
+test("station boxes match their sprites", () => {
+  for (const s of STATIONS) {
+    assert.equal(s.w, SPRITES[s.sprite].w, s.id);
+    assert.equal(s.h, SPRITES[s.sprite].h, s.id);
+  }
+  assert.equal(STATIONS[2].label, "Achievements 8/8");
 });
