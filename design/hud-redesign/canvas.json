@@ -1,0 +1,77 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-14T10:29:01Z"
+ },
+ "title": "Portfolio HUD Redesign",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 3900,
+   "title": "Desktop \u00b7 dark",
+   "expand": "fill"
+  },
+  "DesktopLight.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 1440,
+   "h": 2500,
+   "title": "Desktop \u00b7 light",
+   "expand": "fill"
+  },
+  "Phone.dc.html": {
+   "x": 0,
+   "y": 4020,
+   "w": 390,
+   "h": 8000,
+   "title": "Phone \u00b7 dark"
+  },
+  "PhoneLight.dc.html": {
+   "x": 470,
+   "y": 4020,
+   "w": 390,
+   "h": 1300,
+   "title": "Phone \u00b7 light"
+  },
+  "NotFoundPhone.dc.html": {
+   "x": 940,
+   "y": 4020,
+   "w": 390,
+   "h": 844,
+   "title": "404 \u00b7 phone"
+  },
+  "NotFound.dc.html": {
+   "x": 0,
+   "y": 12140,
+   "w": 1440,
+   "h": 900,
+   "title": "404 \u00b7 desktop",
+   "expand": "fill"
+  },
+  "Components.dc.html": {
+   "x": 1520,
+   "y": 12140,
+   "w": 1200,
+   "h": 3000,
+   "title": "Components"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "DesktopLight.dc.html",
+  "Phone.dc.html",
+  "PhoneLight.dc.html",
+  "NotFoundPhone.dc.html",
+  "NotFound.dc.html",
+  "Components.dc.html"
+ ],
+ "notes": {},
+ "designSystems": []
+}
