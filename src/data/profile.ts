@@ -1,4 +1,4 @@
-export interface Link { label: string; href: string; download?: boolean }
+export interface Link { label: string; href: string; cv?: boolean }
 export interface Job { company: string; role: string; period: string; location: string; bullets: string[] }
 export interface Cert { name: string; code?: string; date: string }
 export interface Skill { label: string; items: string }
@@ -9,7 +9,7 @@ export const links: Link[] = [
   { label: "GitHub", href: "https://github.com/jayveecelestial" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/jayveecelestial/" },
   { label: "Credly", href: "https://www.credly.com/users/jayvee-celestial/badges" },
-  { label: "CV (PDF)", href: "/Jayvee-Celestial-CV.pdf", download: true },
+  { label: "CV (PDF)", href: "#contact", cv: true },
 ];
 
 export const experience: Job[] = [
