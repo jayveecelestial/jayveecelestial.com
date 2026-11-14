@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /_vercel/
+Disallow: /api/
+Disallow: /Jayvee-Celestial-CV.pdf
 
 Sitemap: https://jayveecelestial.com/sitemap-index.xml
