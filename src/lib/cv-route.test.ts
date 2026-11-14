@@ -9,14 +9,14 @@ const post = (fields: Record<string, string> = { 'cf-turnstile-response': 'tok' 
 };
 
 function deps(over: Partial<CvDeps> = {}) {
-  const calls = { verify: [] as Parameters<CvDeps['verify']>[0][], load: [] as string[] };
+  const calls = { verify: [] as Parameters<CvDeps['verify']>[0][], load: [] as string[], req: [] as Request[] };
   const d: CvDeps = {
     vercelEnv: 'production',
     dev: false,
     secret: 'sec',
     clientAddress: '1.2.3.4',
     verify: async (i) => (calls.verify.push(i), { ok: true }),
-    loadPdf: async (s) => (calls.load.push(s), 'PDFBYTES'),
+    loadPdf: async (s, r) => (calls.load.push(s), calls.req.push(r), 'PDFBYTES'),
     ...over,
   };
   return { d, calls };
@@ -113,4 +113,12 @@ test('405 for non-POST with Allow header', async () => {
   assert.equal(res.status, 405);
   assert.equal(res.headers.get('allow'), 'POST');
   assert.equal(calls.verify.length, 0);
+});
+
+test('loader receives the incoming request (carries x-vercel-oidc-token)', async () => {
+  const { d, calls } = deps();
+  const r = post();
+  r.headers.set('x-vercel-oidc-token', 'abc');
+  await handleCv(r, d);
+  assert.equal(calls.req[0].headers.get('x-vercel-oidc-token'), 'abc');
 });
