@@ -59,6 +59,12 @@ export function hitStation(x: number, y: number): Station | null {
   return null;
 }
 
+/** Integer room-px scale from the wrap height; the camera is needed when the width can't show the whole room. */
+export function pickScale(wrapW: number, wrapH: number, dpr: number): { scale: number; camera: boolean } {
+  const scale = Math.max(1, Math.floor((wrapH * dpr) / ROOM_H));
+  return { scale, camera: scale * ROOM_W > wrapW * dpr };
+}
+
 /** Left edge of the visible slice (viewW room px wide) following the hero, clamped to the room. */
 export const cameraX = (heroX: number, viewW: number): number =>
   Math.round(Math.min(Math.max(0, ROOM_W - viewW), Math.max(0, heroX - viewW / 2)));

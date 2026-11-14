@@ -48,7 +48,7 @@
   --tile: var(--bg);
   --focus: var(--teal);
 
-  --pixel: "Pixelify Sans", ui-monospace, monospace;
+  --display: "Red Hat Display", system-ui, sans-serif;
   --sans: "Red Hat Text", system-ui, sans-serif;
   color-scheme: dark;
 }
@@ -67,7 +67,7 @@ body {
 }
 ::selection { background: var(--accent); color: var(--ink); }
 
-h1, h2, h3, .kicker, .btn, dt, .meta, .tile { font-family: var(--pixel); }
+h1, h2, h3, .kicker, .btn, dt, .tile, .skip { font-family: var(--display); }
 h1, h2, h3 { margin: 0; line-height: 1.15; font-weight: 700; }
 h1 { font-size: clamp(2rem, 7vw, 2.75rem); }
 h2 { font-size: 1.75rem; }
@@ -97,7 +97,7 @@ h2[tabindex="-1"]:focus { outline: none; }
   padding: 0.6rem 1rem;
   background: var(--accent);
   color: var(--ink);
-  font: 600 1rem var(--pixel);
+  font: 700 1rem var(--display);
   text-decoration: none;
 }
 .skip:focus { top: 1rem; }
@@ -164,11 +164,12 @@ main {
 /* ---------- HUD, tutorial, stage: hidden until game ---------- */
 #hud { display: flex; justify-content: flex-end; flex-wrap: wrap; margin: 0 0 0.75rem; }
 #help { display: none; }
+#touchpad { display: none; }
 #stage-wrap { display: none; }
 #tutorial[hidden] { display: none; }
 #tutorial { padding: 1.25rem; }
 #tutorial h2 { margin-bottom: 0.75rem; }
-#panel .close { position: sticky; top: 0; float: right; z-index: 2; }
+#panel .close { position: sticky; top: 0.5rem; z-index: 2; display: flex; margin: 0.5rem 0 0.5rem auto; }
 #panel:not([open]) { display: none; }
 
 /* ---------- Sections (plain / no-JS layout) ---------- */
@@ -195,7 +196,7 @@ main {
   box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge);
   margin: 4px;
 }
-.role { margin: 0.25rem 0 0; font: 600 1.15rem var(--pixel); color: var(--fg-muted); }
+.role { margin: 0.25rem 0 0; font: 600 1.15rem/1.3 var(--display); color: var(--fg-muted); }
 
 .stats { list-style: none; margin: 0 0 1.25rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .tile {
@@ -300,11 +301,12 @@ html.game #stations {
 }
 html.game .station { flex: 0 1 11rem; }
 html.game #hud {
-  position: fixed;
-  top: 0.5rem;
-  right: 0.5rem;
+  grid-row: 1;
+  grid-column: 1;
+  align-self: start;
+  justify-self: end;
   z-index: 5;
-  margin: 0;
+  margin: 0.25rem;
 }
 html.game #help { display: inline-flex; }
 html.game #tutorial {
@@ -326,8 +328,38 @@ html.game #tutorial h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
 html.game #tutorial p { font-size: 0.95rem; margin-bottom: 0.75rem; }
 html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25); }
 
+/* ---------- Touch controls: game mode on phones / coarse pointers ---------- */
+@media (max-width: 640px), (pointer: coarse) {
+  html.game main { grid-template-rows: minmax(0, 1fr) auto auto; }
+  html.game #touchpad { grid-row: 2; }
+  html.game #stations { grid-row: 3; }
+  html.game #touchpad {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 0.5rem;
+    grid-column: 1;
+    padding: 0.5rem 0.75rem 0;
+    background: var(--bg);
+  }
+  #touchpad button {
+    min-height: 56px;
+    border: 0;
+    background: var(--accent);
+    color: var(--ink);
+    font: 700 1.25rem var(--display);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    margin: 4px;
+    box-shadow: 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge), inset 0 4px 0 0 rgba(255, 255, 255, 0.35), inset 0 -4px 0 0 rgba(0, 0, 0, 0.25);
+  }
+  #touchpad button:active { transform: translateY(2px); }
+}
+
 /* ---------- Narrow screens ---------- */
 @media (max-width: 640px) {
+  main { padding: 1rem 1rem 1.5rem; }
   h2 { font-size: 1.5rem; }
   .job .row { flex-direction: column; gap: 0.1rem; }
   .skills { grid-template-columns: 1fr; gap: 0.1rem; }
@@ -339,17 +371,50 @@ html.game #tutorial .btn { box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--in
     max-width: none;
     height: 100dvh;
     max-height: none;
+    padding: 0 1rem 1.5rem;
     box-shadow: none;
   }
-  html.game #tutorial { justify-self: center; margin-top: 0.5rem; }
+  html.game main { grid-template-rows: minmax(220px, 1fr) auto auto; }
+  html.game #stage-wrap { grid-row: 1; }
+  html.game #touchpad { grid-row: 2; }
   html.game #stations {
+    grid-row: 3;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.35rem;
     align-content: start;
-    overflow-y: auto;
+    padding-bottom: 0.75rem;
   }
-  html.game .station { flex: none; min-width: 0; padding: 0.5rem 0.25rem; font-size: 0.85rem; }
+  html.game #tutorial { justify-self: center; margin: 0.5rem; padding: 0.75rem; width: calc(100vw - 1rem); }
+  html.game #tutorial h2 { font-size: 1.1rem; }
+  html.game #tutorial p { font-size: 1rem; margin-bottom: 0.5rem; }
+  html.game .station { flex: none; min-width: 0; min-height: 72px; padding: 0.4rem 0.25rem; gap: 0.3rem; font-size: 0.9rem; }
+  html.game .station .icon { width: 20px; height: 20px; }
+}
+
+/* Phone landscape: room on the left, controls on the right */
+@media (max-height: 480px) and (orientation: landscape) {
+  html.game main {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 36%);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  html.game #stage-wrap { grid-row: 1 / 3; grid-column: 1; }
+  html.game #tutorial { grid-row: 1; grid-column: 1; justify-self: start; width: min(22rem, 60vw); }
+  html.game #stations {
+    grid-row: 1;
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+    align-content: start;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  html.game #touchpad { grid-row: 2; grid-column: 2; padding-bottom: 0.5rem; }
+  html.game #hud { grid-row: 1; grid-column: 1; }
+  #panel { inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; box-shadow: none; padding: 0 1rem 1rem; }
+  html.game .station { flex: none; min-width: 0; padding: 0.35rem 0.25rem; font-size: 0.85rem; }
+  html.game .station .icon { width: 20px; height: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -26,6 +26,10 @@ const ACTIVATE_TAGS = new Set(["A", "BUTTON", "SUMMARY"]);
 export interface InputSource {
   /** Snapshot for this step; one-shot fields are cleared. */
   poll(): Input;
+  /** Touchpad: hold or release a direction. */
+  press(dir: "left" | "right", on: boolean): void;
+  /** Touchpad Open: act at the nearest station. */
+  act(): void;
   /** Drop held keys and queued one-shots (on resume). */
   reset(): void;
   /** True if the last interaction was the keyboard (gates announcements). */
@@ -93,6 +97,15 @@ export function createInput(
       const out: Input = { ...once, left: held.has("left"), right: held.has("right") };
       once = { ...NO_INPUT };
       return out;
+    },
+    press(dir, on) {
+      keyboard = false;
+      if (on) held.add(dir);
+      else held.delete(dir);
+    },
+    act() {
+      keyboard = false;
+      once = { ...once, act: true };
     },
     reset() {
       held.clear();

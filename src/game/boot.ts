@@ -48,9 +48,15 @@ function boot() {
   document.documentElement.classList.add("game");
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const touch = matchMedia("(pointer: coarse)").matches;
+  // Touch: coarse pointer, no hover, or touch points with no fine pointer; a first touch pointerdown also flips it.
+  let touch =
+    matchMedia("(pointer: coarse)").matches ||
+    matchMedia("(hover: none)").matches ||
+    (navigator.maxTouchPoints > 0 && !matchMedia("(any-pointer: fine)").matches);
+  let fontOk = false;
   const renderer = createRenderer(canvas, wrap);
-  const input = createInput(canvas, () => panel.open || (!reduced && !raf), renderer.view, !reduced);
+  const blocked = () => panel.open || (!reduced && !raf);
+  const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();
   let onscreen = true;
   let raf = 0;
@@ -60,14 +66,14 @@ function boot() {
   // ---- panel ----
   let opened: { node: HTMLElement; next: Node | null; trigger: HTMLElement | null } | null = null;
 
-  const openStation = (id: string) => {
+  /** `from` = the nav link that opened it; focus returns there on close. Game opens leave focus alone. */
+  const openStation = (id: string, from: HTMLElement | null = null) => {
     const node = document.getElementById(id);
     if (!node || panel.open) return;
-    const active = document.activeElement as HTMLElement | null;
     opened = {
       node,
       next: node.nextSibling,
-      trigger: active && active !== document.body ? active : $(`[data-station="${id}"]`),
+      trigger: from,
     };
     panel.setAttribute("aria-labelledby", `${id}-title`);
     panel.append(node);
@@ -98,18 +104,28 @@ function boot() {
     const a = (e.target as Element).closest<HTMLElement>("[data-station]");
     if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e as MouseEvent).button !== 0) return;
     e.preventDefault();
-    openStation(a.dataset.station!);
+    openStation(a.dataset.station!, a);
   });
 
   // ---- tutorial ----
+  let applyTouch = () => {};
+  addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "touch" || touch) return;
+    touch = true;
+    applyTouch();
+    draw();
+  });
   const tutorial = $("#tutorial");
   if (tutorial) {
     const keysEl = tutorial.querySelector<HTMLElement>("[data-tutorial-keys]");
     const touchEl = tutorial.querySelector<HTMLElement>("[data-tutorial-touch]");
     // No keys without a loop (reduced motion), so show the pointer text there too.
-    const pointer = touch || reduced;
-    if (keysEl) keysEl.hidden = pointer;
-    if (touchEl) touchEl.hidden = !pointer;
+    applyTouch = () => {
+      const pointer = touch || reduced;
+      if (keysEl) keysEl.hidden = pointer;
+      if (touchEl) touchEl.hidden = !pointer;
+    };
+    applyTouch();
     const show = (on: boolean) => {
       tutorial.hidden = !on;
       if (!on) store.set(TUTORIAL_KEY, "1");
@@ -123,7 +139,10 @@ function boot() {
   const draw = () =>
     renderer.draw(state, {
       animate: !reduced,
-      bubble: state.near && !panel.open ? bubbleText(state.near, reduced ? "click" : touch ? "tap" : "key") : null,
+      bubble:
+        fontOk && state.near && !panel.open
+          ? bubbleText(state.near, reduced ? (touch ? "poke" : "click") : touch ? "tap" : "key")
+          : null,
     });
 
   let lastNear: string | null = state.near;
@@ -144,6 +163,30 @@ function boot() {
       if (t) openStation(t);
     });
   }
+
+  // ---- touchpad: hold-to-walk and Open; never takes focus ----
+  const pad = $("#touchpad");
+  pad?.addEventListener("contextmenu", (e) => e.preventDefault());
+  pad?.querySelectorAll<HTMLElement>("[data-move], [data-act]").forEach((btn) => {
+    const dir = btn.dataset.move as "left" | "right" | undefined;
+    const release = () => dir && input.press(dir, false);
+    btn.addEventListener("mousedown", (e) => e.preventDefault());
+    btn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      if (blocked()) return;
+      if (dir) {
+        btn.setPointerCapture(e.pointerId);
+        input.press(dir, true);
+      } else if (!state.near) {
+        if (live) live.textContent = "Walk to an object";
+      } else if (reduced) {
+        openStation(state.near);
+      } else {
+        input.act();
+      }
+    });
+    for (const ev of ["pointerup", "pointercancel", "pointerleave", "lostpointercapture"]) btn.addEventListener(ev, release);
+  });
 
   const frame = (now: number) => {
     raf = 0;
@@ -186,10 +229,14 @@ function boot() {
     renderer.resize();
     draw();
   }).observe(wrap);
-  document.fonts?.ready.then(() => {
-    renderer.resize();
-    draw();
-  });
+  // The bubble waits for its font so it never flashes in the fallback.
+  Promise.resolve(document.fonts?.load('700 14px "Red Hat Display"'))
+    .catch(() => {})
+    .then(() => {
+      fontOk = true;
+      renderer.resize();
+      draw();
+    });
 
   draw();
   sync();

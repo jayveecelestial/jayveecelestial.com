@@ -63,6 +63,12 @@ const twitch = offDuty.links[0];
     <canvas id="stage" width="384" height="216" aria-hidden="true"></canvas>
   </div>
 
+  <div id="touchpad" aria-hidden="true">
+    <button type="button" tabindex="-1" data-move="left">◀</button>
+    <button type="button" tabindex="-1" data-act>Open</button>
+    <button type="button" tabindex="-1" data-move="right">▶</button>
+  </div>
+
   <nav id="stations" aria-label="Sections">
     {STATIONS.map(s => (
       <a class="btn station" href={`#${s.id}`} data-station={s.id}>

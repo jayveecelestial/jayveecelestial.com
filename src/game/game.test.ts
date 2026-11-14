@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { bubbleText } from "./render.ts";
 import { NO_INPUT, initialState, resolveMode, update, type Input, type State } from "./state.ts";
-import { MAX_X, MIN_X, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, stationCenter } from "./world.ts";
+import { MAX_X, MIN_X, ROOM_W, STATIONS, cameraX, clampX, hitStation, nearestStation, pickScale, stationCenter } from "./world.ts";
 
 const DT = 1 / 60;
 const step = (s: State, i: Partial<Input>, n = 1): State => {
@@ -136,6 +136,15 @@ test("resolveMode: only plain/play override stored", () => {
 
 test("bubbleText per input mode", () => {
   assert.equal(bubbleText("work", "key"), "Press E: Quest log");
-  assert.equal(bubbleText("work", "tap"), "Tap: Quest log");
+  assert.equal(bubbleText("work", "tap"), "Tap Open: Quest log");
+  assert.equal(bubbleText("work", "poke"), "Tap: Quest log");
   assert.equal(bubbleText("certs", "click"), "Click: Achievements 8/8");
+});
+
+test("pickScale follows wrap height, camera when width is short", () => {
+  assert.deepEqual(pickScale(390, 432, 3), { scale: 6, camera: true });
+  assert.deepEqual(pickScale(360, 432, 3), { scale: 6, camera: true });
+  assert.deepEqual(pickScale(1440, 803, 1), { scale: 3, camera: false });
+  assert.deepEqual(pickScale(1440, 803, 2), { scale: 7, camera: false });
+  assert.deepEqual(pickScale(100, 50, 1), { scale: 1, camera: true });
 });

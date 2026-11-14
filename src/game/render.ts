@@ -1,7 +1,7 @@
 import type { View } from "./input.ts";
 import { PALETTE_KEYS, SPRITES } from "./sprites.ts";
 import type { State } from "./state.ts";
-import { FLOOR_Y, HERO_H, HERO_W, ROOM_H, ROOM_W, STATIONS, cameraX, stationById, stationCenter } from "./world.ts";
+import { FLOOR_Y, HERO_H, HERO_W, ROOM_H, ROOM_W, STATIONS, cameraX, pickScale, stationById, stationCenter } from "./world.ts";
 
 export interface DrawOptions {
   /** Speech bubble text for the nearest station, or null. */
@@ -18,7 +18,11 @@ export interface Renderer {
   view(): View;
 }
 
-const FONT = '8px "Pixelify Sans", monospace';
+const FONT_FAMILY = '"Red Hat Display", system-ui, sans-serif';
+/** Bubble text size and padding in css px; drawn at device resolution, not in the pixel buffer. */
+const TEXT_PX = 14;
+const MIN_TEXT_PX = 12;
+const PAD_PX = 8;
 /** Optional upper-wall decor: sprite name, centre x, centre y. Skipped when absent. */
 const DECOR: [string, number, number][] = [
   ["poster", 88, 48],
@@ -26,10 +30,12 @@ const DECOR: [string, number, number][] = [
   ["neon", 312, 44],
 ];
 
-export type BubbleMode = "key" | "tap" | "click";
+/** key = keyboard, tap = touchpad Open button, click = mouse in reduced motion, poke = tap on the object in reduced motion. */
+export type BubbleMode = "key" | "tap" | "click" | "poke";
 
-export const bubbleText = (id: string, mode: BubbleMode): string =>
-  `${mode === "key" ? "Press E" : mode === "tap" ? "Tap" : "Click"}: ${stationById(id)?.label ?? ""}`;
+const VERB: Record<BubbleMode, string> = { key: "Press E", tap: "Tap Open", click: "Click", poke: "Tap" };
+
+export const bubbleText = (id: string, mode: BubbleMode): string => `${VERB[mode]}: ${stationById(id)?.label ?? ""}`;
 
 export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Renderer {
   const ctx = canvas.getContext("2d");
@@ -98,17 +104,15 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
   }
 
   let scale = 1;
+  let dpr = 1;
   let viewW = ROOM_W;
   let camX = 0;
   let sig = "";
 
   const resize = () => {
-    const dpr = window.devicePixelRatio || 1;
+    dpr = window.devicePixelRatio || 1;
     const w = wrap.clientWidth * dpr;
-    const h = wrap.clientHeight * dpr;
-    const fit = Math.max(1, Math.floor(Math.min(w / ROOM_W, h / ROOM_H)));
-    // Narrow wrap: size by height and let the camera follow the hero.
-    scale = fit >= 2 * dpr ? fit : Math.max(fit, Math.floor(h / ROOM_H), 1);
+    scale = pickScale(wrap.clientWidth, wrap.clientHeight, dpr).scale;
     viewW = Math.min(ROOM_W, Math.max(1, Math.floor(w / scale)));
     canvas.width = viewW * scale;
     canvas.height = ROOM_H * scale;
@@ -154,15 +158,25 @@ export function createRenderer(canvas: HTMLCanvasElement, wrap: HTMLElement): Re
 
     const near = s.near && stationById(s.near);
     if (o.bubble && near) {
-      ctx.font = FONT;
-      ctx.textBaseline = "middle";
-      const w = Math.ceil(ctx.measureText(o.bubble).width) + 8;
+      // Box in room px; text in a second pass at full backing resolution.
+      // Shrink (down to 12 css px) so the bubble never covers most of a small view.
+      ctx.font = `700 ${TEXT_PX * dpr}px ${FONT_FAMILY}`;
+      const fit = (0.9 * viewW * scale - 2 * PAD_PX * dpr) / ctx.measureText(o.bubble).width;
+      const px = Math.max(MIN_TEXT_PX, Math.min(TEXT_PX, TEXT_PX * fit));
+      const font = `700 ${px * dpr}px ${FONT_FAMILY}`;
+      ctx.font = font;
+      const textW = ctx.measureText(o.bubble).width;
+      const w = Math.ceil((textW + 2 * PAD_PX * dpr) / scale);
+      const h = Math.ceil(((px + 8) * dpr) / scale);
       const bx = Math.round(Math.min(camX + viewW - w - 2, Math.max(camX + 2, stationCenter(near) - w / 2)));
-      const by = Math.max(2, tops - dims("glow").height - 16);
+      const by = Math.max(2, tops - dims("glow").height - 4 - h);
       ctx.fillStyle = c.panel;
-      ctx.fillRect(bx, by, w, 12);
+      ctx.fillRect(bx, by, w, h);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.font = font;
+      ctx.textBaseline = "middle";
       ctx.fillStyle = c.bg;
-      ctx.fillText(o.bubble, bx + 4, by + 6.5);
+      ctx.fillText(o.bubble, (bx - camX) * scale + PAD_PX * dpr, (by + h / 2) * scale);
     }
   };
 
