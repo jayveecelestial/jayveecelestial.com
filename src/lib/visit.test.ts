@@ -10,6 +10,7 @@ import {
   isValidId,
   parseVisit,
   readCreds,
+  visitLabels,
   type VisitDeps,
 } from './visit.ts';
 
@@ -232,6 +233,28 @@ test('formatVisit groups thousands, no padding', () => {
     total: '1,234,567',
     totalVisits: '9,876,543',
   });
+});
+
+test('visitLabels: first visit, singular and plural', () => {
+  const l = visitLabels({ n: 3, visits: 1, total: 5, totalVisits: 9 });
+  assert.equal(l.visitPre + l.visitNum + l.visitPost, '1st Visit');
+  assert.equal(l.total + l.totalLabel, '5 Visitors');
+  assert.equal(l.totalVisits + l.totalVisitsLabel, '9 Visits');
+  assert.equal(l.aria, "You're visitor 3, first visit. 5 visitors and 9 visits in total.");
+  const one = visitLabels({ n: 1, visits: 1, total: 1, totalVisits: 1 });
+  assert.equal(one.total + one.totalLabel, '1 Visitor');
+  assert.equal(one.totalVisits + one.totalVisitsLabel, '1 Visit');
+  assert.equal(one.aria, "You're visitor 1, first visit. 1 visitor and 1 visit in total.");
+});
+
+test('visitLabels: returning visit and thousands', () => {
+  const l = visitLabels({ n: 12345, visits: 1234, total: 12345, totalVisits: 123456 });
+  assert.equal(l.visitPre + l.visitNum + l.visitPost, 'Visit 1,234');
+  assert.equal(l.n, '12,345');
+  assert.equal(l.totalVisits, '123,456');
+  assert.equal(l.aria, "You're visitor 12,345, visit 1,234. 12,345 visitors and 123,456 visits in total.");
+  const r = visitLabels({ n: 3, visits: 4, total: 5, totalVisits: 12 });
+  assert.equal(r.visitPre + r.visitNum + r.visitPost, 'Visit 4');
 });
 
 test('isValidId / isBot', () => {
