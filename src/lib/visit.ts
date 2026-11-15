@@ -58,6 +58,41 @@ export function formatVisit(v: Visit): { n: string; visits: string; total: strin
   return { n: f.format(v.n), visits: f.format(v.visits), total: f.format(v.total), totalVisits: f.format(v.totalVisits) };
 }
 
+export type VisitLabels = {
+  n: string;
+  /** Text before the visit number: "Visit " (empty for a first visit). */
+  visitPre: string;
+  /** "1st" for a first visit, else the visit count. */
+  visitNum: string;
+  /** Text after the visit number: " Visit" for a first visit, else empty. */
+  visitPost: string;
+  total: string;
+  totalLabel: string;
+  totalVisits: string;
+  totalVisitsLabel: string;
+  aria: string;
+};
+
+/** Wording for the visitor strip: singular/plural, "1st visit", grouped thousands. */
+export function visitLabels(v: Visit): VisitLabels {
+  const f = formatVisit(v);
+  const first = v.visits === 1;
+  const totalLabel = v.total === 1 ? ' Visitor' : ' Visitors';
+  const totalVisitsLabel = v.totalVisits === 1 ? ' Visit' : ' Visits';
+  const mine = first ? 'first visit' : `visit ${f.visits}`;
+  return {
+    n: f.n,
+    visitPre: first ? '' : 'Visit ',
+    visitNum: first ? '1st' : f.visits,
+    visitPost: first ? ' Visit' : '',
+    total: f.total,
+    totalLabel,
+    totalVisits: f.totalVisits,
+    totalVisitsLabel,
+    aria: `You're visitor ${f.n}, ${mine}. ${f.total}${totalLabel.toLowerCase()} and ${f.totalVisits}${totalVisitsLabel.toLowerCase()} in total.`,
+  };
+}
+
 /** Rate-limit key for an IP: IPv4 as is, IPv4-mapped IPv6 as IPv4, other IPv6 as its /64 prefix. */
 export function ipPrefix(ip: string): string {
   const addr = ip.trim().toLowerCase().split('%')[0] ?? '';

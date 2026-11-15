@@ -1,4 +1,4 @@
-import { formatVisit, parseVisit } from '../lib/visit.ts';
+import { parseVisit, visitLabels } from '../lib/visit.ts';
 
 const KEY = 'ng-visitor';
 
@@ -29,16 +29,20 @@ async function run(): Promise<void> {
   if (res.status !== 200) return;
   const visit = parseVisit(await res.json());
   if (!visit) return;
-  const f = formatVisit(visit);
-  const set = (sel: string, v: string) => {
-    const node = document.getElementById(sel);
+  const l = visitLabels(visit);
+  const set = (id: string, v: string) => {
+    const node = document.getElementById(id);
     if (node) node.textContent = v;
   };
-  set('visit-n', f.n);
-  set('visit-visits', f.visits);
-  set('visit-total', f.total);
-  set('visit-total-visits', f.totalVisits);
-  el.setAttribute('aria-label', `Visitor ${f.n}, visit ${f.visits}, ${f.total} visitors, ${f.totalVisits} visits total`);
+  set('visit-n', l.n);
+  set('visit-pre', l.visitPre);
+  set('visit-visits', l.visitNum);
+  set('visit-post', l.visitPost);
+  set('visit-total', l.total);
+  set('visit-total-label', l.totalLabel);
+  set('visit-total-visits', l.totalVisits);
+  set('visit-total-visits-label', l.totalVisitsLabel);
+  el.setAttribute('aria-label', l.aria);
   el.setAttribute('data-ready', '');
 }
 

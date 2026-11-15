@@ -64,7 +64,7 @@ Merge to `main`. Vercel deploys automatically. Security headers and the CSP are 
 
 ## Visitor counter
 
-The home page shows `VISITOR #n · VISIT x · y VISITORS · z VISITS`. It is backed by Upstash Redis (free plan, added through the Vercel Marketplace).
+The home page shows `YOU'RE VISITOR #n · 1ST VISIT | y VISITORS · z VISITS TOTAL` (`VISIT x` after the first visit; "You're" and "total" are hidden under 600px). It is backed by Upstash Redis (free plan, added through the Vercel Marketplace).
 
 - Env vars: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. The `KV_REST_API_URL` and `KV_REST_API_TOKEN` names also work. `UPSTASH_*` wins if both are set.
 - On only when credentials exist and `VERCEL_ENV=production` (or `npm run dev`). Adding or changing credentials needs a redeploy, because the gate is evaluated at build. Previews and local builds render no widget and send no request. The route answers 204 when disabled.
