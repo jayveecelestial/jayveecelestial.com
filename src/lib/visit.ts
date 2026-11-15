@@ -4,7 +4,7 @@ const BOT_RE = /bot|crawl|spider|headless|lighthouse|preview/i;
 const ORIGINS = ['https://jayveecelestial.com', 'https://www.jayveecelestial.com'];
 const MAX_BODY_BYTES = 256;
 
-export type Visit = { n: number; visits: number; total: number };
+export type Visit = { n: number; visits: number; total: number; totalVisits: number };
 
 export type VisitDeps = {
   vercelEnv: string | undefined;
@@ -45,16 +45,17 @@ export function readCreds(get: (k: string) => string | undefined): { url: string
 
 export function parseVisit(json: unknown): Visit | null {
   if (typeof json !== 'object' || json === null) return null;
-  const { n, visits, total } = json as Record<string, unknown>;
-  if (!Number.isInteger(n) || !Number.isInteger(visits) || !Number.isInteger(total)) return null;
-  const v = { n: n as number, visits: visits as number, total: total as number };
-  if (v.n < 1 || v.visits < 1 || v.n > v.total) return null;
+  const { n, visits, total, totalVisits } = json as Record<string, unknown>;
+  if (!Number.isInteger(n) || !Number.isInteger(visits) || !Number.isInteger(total) || !Number.isInteger(totalVisits)) return null;
+  const v = { n: n as number, visits: visits as number, total: total as number, totalVisits: totalVisits as number };
+  // totalVisits may trail visits until the backfill has run, so only require >= 1.
+  if (v.n < 1 || v.visits < 1 || v.totalVisits < 1 || v.n > v.total) return null;
   return v;
 }
 
-export function formatVisit(v: Visit): { n: string; visits: string; total: string } {
+export function formatVisit(v: Visit): { n: string; visits: string; total: string; totalVisits: string } {
   const f = new Intl.NumberFormat('en-US');
-  return { n: f.format(v.n), visits: f.format(v.visits), total: f.format(v.total) };
+  return { n: f.format(v.n), visits: f.format(v.visits), total: f.format(v.total), totalVisits: f.format(v.totalVisits) };
 }
 
 /** Rate-limit key for an IP: IPv4 as is, IPv4-mapped IPv6 as IPv4, other IPv6 as its /64 prefix. */

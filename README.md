@@ -64,13 +64,14 @@ Merge to `main`. Vercel deploys automatically. Security headers and the CSP are 
 
 ## Visitor counter
 
-The home page shows `VISITOR #n · VISIT x · y VISITORS`. It is backed by Upstash Redis (free plan, added through the Vercel Marketplace).
+The home page shows `VISITOR #n · VISIT x · y VISITORS · z VISITS`. It is backed by Upstash Redis (free plan, added through the Vercel Marketplace).
 
 - Env vars: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. The `KV_REST_API_URL` and `KV_REST_API_TOKEN` names also work. `UPSTASH_*` wins if both are set.
 - On only when credentials exist and `VERCEL_ENV=production` (or `npm run dev`). Adding or changing credentials needs a redeploy, because the gate is evaluated at build. Previews and local builds render no widget and send no request. The route answers 204 when disabled.
 - Local dev: put the two vars in `.env` and point them at a separate Upstash database, never the production one.
-- `POST /api/visit` with `{"id":"<uuid v4>"}` returns `{n, visits, total}`. A visit counts again only after 30 minutes away. Each IP can create at most 10 new visitor numbers and send 120 requests per day (429 beyond that). In production only `https://jayveecelestial.com` and `https://www.jayveecelestial.com` origins are accepted. Bots are not counted.
-- Redis keys: `vc:total` (unique visitors), `vc:v:<id>` (hash with `n`, `visits`, `last`), `vc:ip:<hash>` and `vc:rl:<hash>` (daily cap counters, expire after 24 hours).
+- `POST /api/visit` with `{"id":"<uuid v4>"}` returns `{n, visits, total, totalVisits}`. `visits` is this visitor's own count, `totalVisits` is the site-wide count. A visit counts again only after 30 minutes away. Each IP can create at most 10 new visitor numbers and send 120 requests per day (429 beyond that). In production only `https://jayveecelestial.com` and `https://www.jayveecelestial.com` origins are accepted. Bots are not counted.
+- Redis keys: `vc:total` (unique visitors), `vc:visits` (site-wide total visits, incremented exactly where a visit counts), `vc:v:<id>` (hash with `n`, `visits`, `last`), `vc:ip:<hash>` and `vc:rl:<hash>` (daily cap counters, expire after 24 hours).
+- Backfill: `vc:visits` starts empty, so run `node scripts/backfill-visits.mjs` once after deploying. It scans `vc:v:*`, sums the `visits` fields and prints the sum (dry run). Add `--write` to raise `vc:visits` to the sum. The write is one atomic raise-only EVAL (it never lowers the counter) and prints the before and after values, so reruns are safe. Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or the `KV_REST_API_*` names) in the environment first. Visits counted between the scan and the write can leave the counter slightly low; rerun the script to correct it. Never put a TTL on `vc:v:*` hashes: the backfill sum relies on them living forever.
 - `npm run preview` is not supported with the `@astrojs/vercel` adapter. Use `npm run dev`.
 
 Privacy: the browser stores a random id in `localStorage` (`ng-visitor`). The server keeps the IP only as a daily key, an HMAC-SHA256 with a server secret (the Upstash token), that expires after 24 hours. No personal data is stored. The strip has a tooltip saying so.
