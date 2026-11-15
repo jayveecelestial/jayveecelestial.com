@@ -9,6 +9,8 @@
   <span class="lbl">Visit </span><b id="visit-visits"></b>
   <span class="sep" aria-hidden="true">·</span>
   <b id="visit-total"></b><span class="lbl"> Visitors</span>
+  <span class="sep" aria-hidden="true">·</span>
+  <b id="visit-total-visits"></b><span class="lbl"> Visits</span>
 </p>
 
 <script>
@@ -37,6 +39,10 @@
   .sep { margin: 0 0.35em; }
   b { color: var(--accent); font-weight: 600; }
   @media (max-width: 400px) {
-    .visits { font-size: 0.7rem; letter-spacing: 0.02em; }
+    .visits { font-size: 0.62rem; letter-spacing: 0; }
+    .sep { margin: 0 0.25em; }
+  }
+  @media (max-width: 340px) {
+    .sep { margin: 0 0.15em; }
   }
 </style>

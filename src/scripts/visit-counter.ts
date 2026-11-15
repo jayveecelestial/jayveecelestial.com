@@ -37,7 +37,8 @@ async function run(): Promise<void> {
   set('visit-n', f.n);
   set('visit-visits', f.visits);
   set('visit-total', f.total);
-  el.setAttribute('aria-label', `Visitor ${f.n}, visit ${f.visits}, ${f.total} visitors total`);
+  set('visit-total-visits', f.totalVisits);
+  el.setAttribute('aria-label', `Visitor ${f.n}, visit ${f.visits}, ${f.total} visitors, ${f.totalVisits} visits total`);
   el.setAttribute('data-ready', '');
 }
 

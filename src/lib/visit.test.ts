@@ -33,7 +33,7 @@ function setup(over: Partial<VisitDeps> = {}) {
     now: NOW,
     hit: async (a) => {
       calls.push(a);
-      return { n: 42, visits: 3, total: 1234 };
+      return { n: 42, visits: 3, total: 1234, totalVisits: 5678 };
     },
     ...over,
   };
@@ -146,7 +146,7 @@ test('handleVisit: success returns JSON, no-store, and hashed ip key', async () 
   const res = await handleVisit(req(good, { origin: ORIGIN }), deps);
   assert.equal(res.status, 200);
   assert.equal(res.headers.get('cache-control'), 'no-store');
-  assert.deepEqual(await res.json(), { n: 42, visits: 3, total: 1234 });
+  assert.deepEqual(await res.json(), { n: 42, visits: 3, total: 1234, totalVisits: 5678 });
   assert.equal(calls.length, 1);
   const a = calls[0] as { id: string; ipKey: string; now: number };
   assert.equal(a.id, ID);
@@ -188,33 +188,49 @@ test('readCreds: KV only, UPSTASH only, both prefers UPSTASH', () => {
 });
 
 test('parseVisit accepts good shape and rejects bad ones', () => {
-  assert.deepEqual(parseVisit({ n: 1, visits: 1, total: 1 }), { n: 1, visits: 1, total: 1 });
-  assert.deepEqual(parseVisit({ n: 5, visits: 2, total: 9, extra: 1 }), { n: 5, visits: 2, total: 9 });
+  assert.deepEqual(parseVisit({ n: 1, visits: 1, total: 1, totalVisits: 1 }), { n: 1, visits: 1, total: 1, totalVisits: 1 });
+  assert.deepEqual(parseVisit({ n: 5, visits: 2, total: 9, totalVisits: 20, extra: 1 }), {
+    n: 5,
+    visits: 2,
+    total: 9,
+    totalVisits: 20,
+  });
+  // Before the backfill a returning visitor's own visits can exceed the site total.
+  assert.deepEqual(parseVisit({ n: 1, visits: 7, total: 1, totalVisits: 1 }), { n: 1, visits: 7, total: 1, totalVisits: 1 });
   for (const bad of [
     null,
     undefined,
     'x',
     [],
     {},
-    { n: 0, visits: 1, total: 1 },
-    { n: 1, visits: 0, total: 1 },
-    { n: 2, visits: 1, total: 1 },
-    { n: 1.5, visits: 1, total: 2 },
-    { n: '1', visits: 1, total: 1 },
-    { n: -1, visits: 1, total: 1 },
-    { n: 1, visits: 1 },
-    { n: NaN, visits: 1, total: 1 },
+    { n: 0, visits: 1, total: 1, totalVisits: 1 },
+    { n: 1, visits: 0, total: 1, totalVisits: 1 },
+    { n: 2, visits: 1, total: 1, totalVisits: 1 },
+    { n: 1.5, visits: 1, total: 2, totalVisits: 1 },
+    { n: '1', visits: 1, total: 1, totalVisits: 1 },
+    { n: -1, visits: 1, total: 1, totalVisits: 1 },
+    { n: 1, visits: 1, total: 1 },
+    { n: 1, visits: 1, total: 1, totalVisits: 0 },
+    { n: 1, visits: 1, total: 1, totalVisits: 1.5 },
+    { n: 1, visits: 1, total: 1, totalVisits: '1' },
+    { n: NaN, visits: 1, total: 1, totalVisits: 1 },
   ]) {
     assert.equal(parseVisit(bad), null, JSON.stringify(bad));
   }
 });
 
 test('formatVisit groups thousands, no padding', () => {
-  assert.deepEqual(formatVisit({ n: 42, visits: 3, total: 1234 }), { n: '42', visits: '3', total: '1,234' });
-  assert.deepEqual(formatVisit({ n: 1000000, visits: 12, total: 1234567 }), {
+  assert.deepEqual(formatVisit({ n: 42, visits: 3, total: 1234, totalVisits: 5678 }), {
+    n: '42',
+    visits: '3',
+    total: '1,234',
+    totalVisits: '5,678',
+  });
+  assert.deepEqual(formatVisit({ n: 1000000, visits: 12, total: 1234567, totalVisits: 9876543 }), {
     n: '1,000,000',
     visits: '12',
     total: '1,234,567',
+    totalVisits: '9,876,543',
   });
 });
 
