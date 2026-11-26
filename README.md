@@ -15,6 +15,7 @@ Node version: see `engines` in `package.json`. `.npmrc` sets `legacy-peer-deps=t
 | `npm run build`   | Build the site to `dist/`                             |
 | `npm run preview` | Not supported with the Vercel adapter (use `dev`)    |
 | `npm run test`    | Unit tests (`node --test`) for the game code          |
+| `npm run test:e2e` | Browser tests (Playwright) against the built site. Run `npm run build` first. |
 
 ## Views
 
@@ -64,7 +65,9 @@ The CV PDF is private. Visitors pass a Cloudflare Turnstile check, then the page
 
 Merge to `main`. Vercel deploys automatically. Security headers and the CSP are in `vercel.json`.
 
-- CI: `.github/workflows/ci.yml` runs `npm test` and `npm run build` on every pull request and on pushes to `main`.
+- CI: `.github/workflows/ci.yml` runs `npm audit --audit-level=high`, `npm test` and `npm run build`, then the browser tests in Chromium, Firefox, WebKit and a mobile Chromium profile, on every pull request and on pushes to `main`.
+- Browser tests: `e2e/site.spec.ts`. They serve the built site with `scripts/serve-static.mjs`, which applies the headers from `vercel.json`, so CSP violations and console errors fail a test. Accessibility checks (axe, WCAG 2.2 AA, serious and critical findings) run in Chromium only. First time locally: `npx playwright install`.
+- Dependabot (`.github/dependabot.yml`) opens weekly update PRs for npm packages and GitHub Actions.
 - The CSP allows no inline scripts. `astro.config.mjs` stops Astro from inlining small scripts into the HTML, so every script ships as a file under `/_astro/`. Don't add `is:inline` scripts or inline event handlers; they will be blocked in production.
 
 ## Visitor counter

@@ -34,3 +34,7 @@ GITHUB_PROFILE_README.md
 
 # private assets (CV PDF for local dev)
 /private/
+
+# playwright
+/test-results/
+/playwright-report/
