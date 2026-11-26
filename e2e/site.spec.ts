@@ -149,3 +149,28 @@ test.describe('accessibility', () => {
     });
   }
 });
+
+// Layout shift: the game view used to paint as the plain CV first, then jump (CLS 0.3 to 0.6
+// in Lighthouse). Chromium only, since it is the browser with the Layout Instability API.
+test.describe('layout stability', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'layout-shift entries are Chromium only');
+
+  for (const url of ['/?view=play', '/?view=plain']) {
+    test(`no big layout shift on load: ${url}`, async ({ page }) => {
+      await watchErrors(page);
+      await page.addInitScript(() => {
+        (window as unknown as { cls: number }).cls = 0;
+        new PerformanceObserver((list) => {
+          for (const e of list.getEntries() as unknown as { value: number; hadRecentInput: boolean }[]) {
+            if (!e.hadRecentInput) (window as unknown as { cls: number }).cls += e.value;
+          }
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+      await page.goto(url);
+      await page.evaluate(() => document.fonts.ready);
+      await page.waitForTimeout(1000);
+      const cls = await page.evaluate(() => (window as unknown as { cls: number }).cls);
+      expect(cls).toBeLessThan(0.1);
+    });
+  }
+});
