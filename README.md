@@ -37,6 +37,7 @@ Node version: see `engines` in `package.json`. `.npmrc` sets `legacy-peer-deps=t
 - `src/game/render.ts`: canvas drawing and speech bubbles.
 - `src/game/sprites.ts`: pixel-art sprites and palette keys.
 - `src/game/quest.ts`: the 3-task visitor quest (work, certs, contact) and its progress logic.
+- `src/game/title.ts`: when the first-visit title card shows (`#title` in `index.astro`). It replaces the first "How to play" popup and is skipped for returning visitors (`ng-tutorial` in `localStorage`), `?view=play`, `?view=plain` and deep links such as `/#work`.
 - `src/game/game.test.ts`: unit tests for the game code.
 - `src/assets/`: images processed by Astro (`avatar.webp`, `hero.png`).
 - `public/`: static files (icons, avatar, social preview image, `robots.txt`).

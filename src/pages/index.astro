@@ -117,6 +117,21 @@ const notes = await listNotes();
     <button type="button" class="btn" data-tutorial-close>Got it</button>
   </div>
 
+  <dialog id="title" aria-labelledby="title-name" aria-describedby="title-blurb">
+    <p class="kicker">Night Shift</p>
+    <h2 id="title-name">Jayvee Celestial</h2>
+    <p class="role">Senior DevOps Engineer</p>
+    <p id="title-blurb">
+      Walk around my late-night workroom to read my CV, or skip straight to the plain version.
+    </p>
+    <p class="title-keys" data-tutorial-keys>Arrows or A/D walk · Up, W or Space jumps · Enter or E opens</p>
+    <p class="title-keys" data-tutorial-touch hidden>Tap an object to walk there and open it</p>
+    <div class="q-actions">
+      <button type="button" class="btn" data-title-start autofocus>Press Start</button>
+      <a class="btn btn-alt" href="?view=plain#about" data-title-plain>Just the CV</a>
+    </div>
+  </dialog>
+
   <aside id="quest" hidden aria-label="Quest">
     <button type="button" id="quest-toggle" aria-expanded="true" aria-controls="quest-list">
       <span class="q-title">Quest</span> <span id="quest-count">0/3</span>
