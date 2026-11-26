@@ -2,8 +2,6 @@ export interface Link { label: string; href: string; cv?: boolean }
 export interface Job { company: string; role: string; period: string; location: string; bullets: string[] }
 export interface Cert { name: string; code?: string; date: string }
 export interface Skill { label: string; items: string }
-/** href only for public repos or pages; private repos get no link. */
-export interface Project { name: string; summary: string; stack: string; href?: string }
 
 export const email = { user: "jayveeccelestial", domain: "gmail.com" };
 
@@ -48,34 +46,6 @@ export const experience: Job[] = [
       "Built Jenkins declarative pipelines for pull request validation, code quality checks, and build analytics.",
       "Trained and supported 300+ project managers, developers, and architects.",
     ],
-  },
-];
-
-export const projects: Project[] = [
-  {
-    name: "Homelab cluster",
-    summary:
-      "Three-node k3s cluster run fully through GitOps: Argo CD syncs every app from Git, and secrets are committed only as Sealed Secrets. Cilium replaced Flannel, ingress-nginx and kube-proxy. Longhorn storage backs up to Cloudflare R2, and apps reach the internet through a Cloudflare Tunnel with cert-manager certificates.",
-    stack: "k3s, Argo CD, Cilium, Longhorn, Sealed Secrets, cert-manager, kube-prometheus-stack, n8n",
-  },
-  {
-    name: "MeetRec",
-    summary:
-      "macOS menu bar app that records Teams meetings, shows live English captions for Lebanese Arabic, and writes a transcript and minutes afterwards. Transcription runs locally with whisper.cpp; an offline mode sends nothing to an outside service.",
-    stack: "Swift, whisper.cpp, ffmpeg, Claude",
-  },
-  {
-    name: "Istio canary on Kind",
-    summary:
-      "Local lab for canary releases: a Spring Boot app on Kind behind an Istio gateway with HTTPS, splitting traffic 80/20 between v1 and v2. A GitHub webhook triggers the Jenkins pipeline that builds and deploys it.",
-    stack: "Kind, Istio, Jenkins, Docker, Java",
-  },
-  {
-    name: "This site",
-    summary:
-      "Astro on Vercel with a canvas game over plain HTML. The CV download is gated by Cloudflare Turnstile and streamed from a private Blob store. The visitor counter is one atomic Redis script on Upstash with per-IP limits and no personal data stored. Strict security headers and CSP.",
-    stack: "Astro, TypeScript, Vercel, Upstash Redis, Turnstile",
-    href: "https://github.com/jayveecelestial/jayveecelestial.com",
   },
 ];
 
