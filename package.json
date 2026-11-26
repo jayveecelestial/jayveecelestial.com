@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test --experimental-strip-types src/game/*.test.ts src/lib/*.test.ts"
+    "test": "node --test --experimental-strip-types src/game/*.test.ts src/lib/*.test.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
@@ -28,5 +29,9 @@
     "@vercel/cli-config": {
       "zod": "^4.6.7"
     }
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
+    "@playwright/test": "^1.65.1"
   }
 }
