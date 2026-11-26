@@ -62,6 +62,9 @@ The CV PDF is private. Visitors pass a Cloudflare Turnstile check, then the page
 
 Merge to `main`. Vercel deploys automatically. Security headers and the CSP are in `vercel.json`.
 
+- CI: `.github/workflows/ci.yml` runs `npm test` and `npm run build` on every pull request and on pushes to `main`.
+- The CSP allows no inline scripts. `astro.config.mjs` stops Astro from inlining small scripts into the HTML, so every script ships as a file under `/_astro/`. Don't add `is:inline` scripts or inline event handlers; they will be blocked in production.
+
 ## Visitor counter
 
 The home page shows `YOU'RE VISITOR #n · 1ST VISIT | y VISITORS · z VISITS TOTAL` (`VISIT x` after the first visit; "You're" and "total" are hidden under 600px). It is backed by Upstash Redis (free plan, added through the Vercel Marketplace).
