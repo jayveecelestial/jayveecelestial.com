@@ -6,6 +6,7 @@ import '@fontsource/red-hat-display/latin-700.css';
 import '@fontsource/red-hat-text/latin-400.css';
 import '@fontsource/red-hat-text/latin-500.css';
 import '../styles/global.css';
+import { listNotes } from '../lib/notes';
 
 interface Props {
   title: string;
@@ -13,6 +14,8 @@ interface Props {
   skip?: boolean;
 }
 const { title, description, skip = false } = Astro.props;
+// Advertise the notes feed only when it has something in it.
+const hasNotes = (await listNotes()).length > 0;
 ---
 
 <!DOCTYPE html>
@@ -27,6 +30,7 @@ const { title, description, skip = false } = Astro.props;
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {hasNotes && <link rel="alternate" type="application/rss+xml" title="Jayvee Celestial · Notes" href="/rss.xml" />}
   <slot name="head" />
   <noscript><style>#mode-toggle { display: none; }</style></noscript>
 </head>
