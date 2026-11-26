@@ -223,6 +223,7 @@ main {
 
 .sub { margin: 2rem 0 0.75rem; }
 .notes { list-style: none; margin: 0; padding: 0; }
+.sub .rss { margin-left: 0.5rem; font-family: var(--sans); }
 .notes li { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0; border-bottom: 2px dotted var(--fg-muted); }
 .notes li:last-child { border-bottom: 0; }
 

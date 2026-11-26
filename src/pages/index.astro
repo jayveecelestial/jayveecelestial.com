@@ -211,7 +211,7 @@ const notes = await listNotes();
 
         {notes.length > 0 && (
           <>
-            <h3 class="sub">Notes</h3>
+            <h3 class="sub">Notes <a class="meta rss" href="/rss.xml">RSS</a></h3>
             <ul class="notes">
               {notes.map(n => (
                 <li>
