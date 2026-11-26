@@ -68,7 +68,7 @@ Merge to `main`. Vercel deploys automatically. Security headers and the CSP are 
 - CI: `.github/workflows/ci.yml` runs `npm audit --audit-level=high`, `npm test` and `npm run build`, then the browser tests in Chromium, Firefox, WebKit and a mobile Chromium profile, on every pull request and on pushes to `main`.
 - Browser tests: `e2e/site.spec.ts`. They serve the built site with `scripts/serve-static.mjs`, which applies the headers from `vercel.json`, so CSP violations and console errors fail a test. Accessibility checks (axe, WCAG 2.2 AA, serious and critical findings) run in Chromium only. First time locally: `npx playwright install`.
 - Dependabot (`.github/dependabot.yml`) opens weekly update PRs for npm packages and GitHub Actions.
-- The CSP allows no inline scripts. `astro.config.mjs` stops Astro from inlining small scripts into the HTML, so every script ships as a file under `/_astro/`. Don't add `is:inline` scripts or inline event handlers; they will be blocked in production.
+- The CSP allows no inline scripts. `astro.config.mjs` stops Astro from inlining small scripts into the HTML, so every script ships as a file under `/_astro/`. Don't add inline script code or inline event handlers; they will be blocked in production. The one `is:inline` tag, in `index.astro`, only loads `public/mode.js` by URL: it picks the game or plain layout before the first paint so the page doesn't jump (keep it in step with `resolveMode` in `src/game/state.ts`).
 
 ## Visitor counter
 

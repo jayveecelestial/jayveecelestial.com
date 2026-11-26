@@ -50,6 +50,8 @@ const notes = await listNotes();
 <Base title="Jayvee Celestial" description={description} skip>
   {counterOn && <VisitCounter slot="top" />}
   <Fragment slot="head">
+    <!-- Render-blocking on purpose: sets the game layout before first paint (no layout jump). -->
+    <script is:inline src="/mode.js"></script>
     <meta property="og:title" content="Jayvee Celestial" />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

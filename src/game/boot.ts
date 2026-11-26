@@ -49,7 +49,11 @@ function boot() {
   const wrap = $("#stage-wrap");
   const panel = $<HTMLDialogElement>("#panel");
   const live = $("#live");
-  if (plain || !canvas || !wrap || !panel || !canvas.getContext?.("2d")) return;
+  if (plain || !canvas || !wrap || !panel || !canvas.getContext?.("2d")) {
+    // public/mode.js may have picked the game layout before paint; fall back to the plain CV.
+    document.documentElement.classList.remove("game");
+    return;
+  }
 
   document.documentElement.classList.add("game");
 
