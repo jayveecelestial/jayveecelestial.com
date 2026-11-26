@@ -3,6 +3,7 @@ import { bubbleText, createRenderer } from "./render.ts";
 import { QUEST, announcement, isComplete, isQuestId, markDone, parseStored, shouldShowBanner, type QuestId } from "./quest.ts";
 import { createSound, parsePref, sfxForQuest } from "./sound.ts";
 import { NO_INPUT, initialState, resolveMode, update } from "./state.ts";
+import { shouldShowTitle } from "./title.ts";
 import { stationById } from "./world.ts";
 
 const MODE_KEY = "ng-mode";
@@ -67,7 +68,7 @@ function boot() {
       ? Math.max(0, (hud?.getBoundingClientRect().bottom ?? 0) - wrap.getBoundingClientRect().top)
       : 0,
   );
-  const blocked = () => panel.open || !!doneDlg?.open || (!reduced && !raf);
+  const blocked = () => panel.open || !!doneDlg?.open || !!titleDlg?.open || (!reduced && !raf);
   const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();
   let onscreen = true;
@@ -106,6 +107,7 @@ function boot() {
   // ---- quest: open Work, Trophies and Mailbox ----
   const tracker = $("#quest");
   const doneDlg = $<HTMLDialogElement>("#quest-done");
+  const titleDlg = $<HTMLDialogElement>("#title");
   let done: readonly QuestId[] = parseStored(store.get(QUEST_KEY));
   let showDoneAfterClose = false;
   /** #live is inert while a modal is open, so announcements wait for the panel to close. */
@@ -255,6 +257,8 @@ function boot() {
       const pointer = touch || reduced;
       if (keysEl) keysEl.hidden = pointer;
       if (touchEl) touchEl.hidden = !pointer;
+      titleDlg?.querySelectorAll<HTMLElement>("[data-tutorial-keys]").forEach((el) => (el.hidden = pointer));
+      titleDlg?.querySelectorAll<HTMLElement>("[data-tutorial-touch]").forEach((el) => (el.hidden = !pointer));
     };
     applyTouch();
     const show = (on: boolean) => {
@@ -262,7 +266,25 @@ function boot() {
       document.documentElement.classList.toggle("tutorial-open", on);
       if (!on) store.set(TUTORIAL_KEY, "1");
     };
-    show(!store.get(TUTORIAL_KEY));
+    // First visit: the title card carries the controls, so it stands in for the tutorial.
+    const showTitle =
+      !!titleDlg && shouldShowTitle({ view, hash: location.hash, tutorialSeen: !!store.get(TUTORIAL_KEY) });
+    if (showTitle && titleDlg) {
+      titleDlg.addEventListener("close", () => {
+        store.set(TUTORIAL_KEY, "1");
+        // Focus back on the page so the arrow keys walk at once.
+        (document.activeElement as HTMLElement | null)?.blur();
+        sync();
+      });
+      titleDlg.querySelector("[data-title-start]")?.addEventListener("click", () => titleDlg.close());
+      titleDlg.querySelector("[data-title-plain]")?.addEventListener("click", () => {
+        store.set(TUTORIAL_KEY, "1");
+        store.set(MODE_KEY, "plain");
+      });
+      titleDlg.showModal();
+    } else {
+      show(!store.get(TUTORIAL_KEY));
+    }
     tutorial.querySelector("[data-tutorial-close]")?.addEventListener("click", () => show(false));
     $("#help")?.addEventListener("click", () => show(tutorial.hidden));
   }
@@ -367,7 +389,8 @@ function boot() {
     if (shouldRun() && !raf) raf = requestAnimationFrame(frame);
   };
 
-  const shouldRun = () => !reduced && onscreen && !document.hidden && !panel.open && !doneDlg?.open;
+  const shouldRun = () =>
+    !reduced && onscreen && !document.hidden && !panel.open && !doneDlg?.open && !titleDlg?.open;
 
   function sync() {
     const run = shouldRun();
