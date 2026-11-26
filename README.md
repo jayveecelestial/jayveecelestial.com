@@ -46,6 +46,7 @@ Node version: see `engines` in `package.json`. `.npmrc` sets `legacy-peer-deps=t
 ## Editing content
 
 - CV text and links: `src/data/profile.ts`.
+- Notes: Markdown files in `src/content/notes/` become `/notes/<file-name>` and are listed at the end of the Work section. Frontmatter: `title`, `summary`, `date`, `draft`. Drafts build in dev and Vercel previews (with `noindex`), never in production. Set `draft: false` to publish.
 - CV PDF: see the next section. The PDF is not in `public/`.
 
 ## CV download
