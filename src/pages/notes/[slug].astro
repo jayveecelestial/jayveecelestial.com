@@ -1,0 +1,41 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { listNotes } from '../../lib/notes';
+
+export async function getStaticPaths() {
+  const notes = await listNotes();
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const url = new URL(`/notes/${note.id}`, Astro.site).href;
+const date = note.data.date.toISOString().slice(0, 10);
+const title = `${note.data.title} · Jayvee Celestial`;
+---
+
+<Base title={title} description={note.data.summary}>
+  <Fragment slot="head">
+    {note.data.draft && <meta name="robots" content="noindex" />}
+    <meta property="og:title" content={note.data.title} />
+    <meta property="og:description" content={note.data.summary} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content="https://jayveecelestial.com/og-night-shift.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Jayvee Celestial, Senior DevOps Engineer — pixel-art night shift room" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://jayveecelestial.com/og-night-shift.png" />
+    <link rel="canonical" href={url} />
+  </Fragment>
+
+  <p class="note-back"><a href="/?view=plain#work">← Back to the CV</a></p>
+  <article class="px-panel sec note">
+    <p class="kicker">Notes · <time datetime={date}>{date}</time>{note.data.draft && ' · Draft'}</p>
+    <h1>{note.data.title}</h1>
+    <p class="lede">{note.data.summary}</p>
+    <Content />
+  </article>
+</Base>

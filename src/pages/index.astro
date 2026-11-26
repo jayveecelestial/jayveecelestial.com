@@ -7,7 +7,8 @@ import { counterEnabled, readCreds } from '../lib/visit.ts';
 import portrait from '../assets/avatar.webp';
 import { STATIONS } from '../game/world';
 import { QUEST } from '../game/quest';
-import { email, links, experience, certs, skills, stats, offDuty, description } from '../data/profile';
+import { email, links, experience, projects, certs, skills, stats, offDuty, description } from '../data/profile';
+import { listNotes } from '../lib/notes';
 
 const site = 'https://jayveecelestial.com/';
 
@@ -43,6 +44,7 @@ const splitLabel = (label: string): [string, string | undefined] => {
 };
 
 const twitch = offDuty.links[0];
+const notes = await listNotes();
 ---
 
 <Base title="Jayvee Celestial" description={description} skip>
@@ -191,6 +193,33 @@ const twitch = offDuty.links[0];
             </ul>
           </article>
         ))}
+
+        <h3 class="sub">Projects</h3>
+        <ul class="projects">
+          {projects.map(p => (
+            <li class="project">
+              <h4>{p.href
+                ? <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name}</a>
+                : p.name}</h4>
+              <p>{p.summary}</p>
+              <p class="meta">{p.stack}</p>
+            </li>
+          ))}
+        </ul>
+
+        {notes.length > 0 && (
+          <>
+            <h3 class="sub">Notes</h3>
+            <ul class="notes">
+              {notes.map(n => (
+                <li>
+                  <span><a href={`/notes/${n.id}`}>{n.data.title}</a>{n.data.draft && <span class="meta code">draft</span>}</span>
+                  <span class="meta">{n.data.summary}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </section>
 
