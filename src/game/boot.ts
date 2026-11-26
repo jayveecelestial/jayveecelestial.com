@@ -270,13 +270,18 @@ function boot() {
     const showTitle =
       !!titleDlg && shouldShowTitle({ view, hash: location.hash, tutorialSeen: !!store.get(TUTORIAL_KEY) });
     if (showTitle && titleDlg) {
-      titleDlg.addEventListener("close", () => {
+      // Start the room straight away: waiting for the async close event would drop a key pressed in between.
+      const begin = () => {
         store.set(TUTORIAL_KEY, "1");
         // Focus back on the page so the arrow keys walk at once.
         (document.activeElement as HTMLElement | null)?.blur();
         sync();
+      };
+      titleDlg.addEventListener("close", begin); // Esc; a second call is a no-op
+      titleDlg.querySelector("[data-title-start]")?.addEventListener("click", () => {
+        titleDlg.close();
+        begin();
       });
-      titleDlg.querySelector("[data-title-start]")?.addEventListener("click", () => titleDlg.close());
       titleDlg.querySelector("[data-title-plain]")?.addEventListener("click", () => {
         store.set(TUTORIAL_KEY, "1");
         store.set(MODE_KEY, "plain");
