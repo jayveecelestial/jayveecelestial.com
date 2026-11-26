@@ -1,3 +1,25 @@
+/* Fallback faces sized to match Red Hat, so text doesn't reflow (and the page doesn't jump)
+   when the web fonts swap in. Arial, or the metric-compatible Liberation Sans / Arimo on Linux.
+   Overrides computed by Astro's font metrics (optimizedFallbacks) for these exact files. */
+@font-face {
+  font-family: "Red Hat Display Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans-Regular"), local("Arimo"), local("Arimo-Regular");
+  font-weight: 600;
+  size-adjust: 102.2878%; ascent-override: 99.5231%; descent-override: 29.8178%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Red Hat Display Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Arimo Bold"), local("Arimo-Bold");
+  font-weight: 700;
+  size-adjust: 95.0039%; ascent-override: 107.1535%; descent-override: 32.104%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Red Hat Text Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans-Regular"), local("Arimo"), local("Arimo-Regular");
+  font-weight: 400 500;
+  size-adjust: 100.269%; ascent-override: 101.5269%; descent-override: 30.4182%; line-gap-override: 0%;
+}
+
 :root {
   /* Palette "Dusk Souk" */
   --bg: #1a1423;
@@ -48,8 +70,8 @@
   --tile: var(--bg);
   --focus: var(--teal);
 
-  --display: "Red Hat Display", system-ui, sans-serif;
-  --sans: "Red Hat Text", system-ui, sans-serif;
+  --display: "Red Hat Display", "Red Hat Display Fallback", system-ui, sans-serif;
+  --sans: "Red Hat Text", "Red Hat Text Fallback", system-ui, sans-serif;
   color-scheme: dark;
 }
 

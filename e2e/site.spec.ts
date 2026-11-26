@@ -149,3 +149,45 @@ test.describe('accessibility', () => {
     });
   }
 });
+
+// Layout shift: the game view used to paint as the plain CV first, then jump (CLS 0.3 to 0.6
+// in Lighthouse). Chromium only, since it is the browser with the Layout Instability API.
+test.describe('layout stability', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'layout-shift entries are Chromium only');
+
+  for (const url of ['/?view=play', '/?view=plain']) {
+    test(`no big layout shift on load: ${url}`, async ({ page }) => {
+      await watchErrors(page);
+      type Shift = { value: number; hadRecentInput: boolean; startTime: number; sources?: { node?: Node | null }[] };
+      type W = { cls: number; shifts: string[] };
+      await page.addInitScript(() => {
+        const w = window as unknown as W;
+        w.cls = 0;
+        w.shifts = [];
+        const name = (n?: Node | null) => {
+          if (!n) return '?';
+          const el = n instanceof Element ? n : n.parentElement;
+          if (!el) return n.nodeName;
+          return el.tagName.toLowerCase() + (el.id ? `#${el.id}` : '') + (el.classList.length ? `.${[...el.classList].join('.')}` : '');
+        };
+        new PerformanceObserver((list) => {
+          for (const e of list.getEntries() as unknown as Shift[]) {
+            if (e.hadRecentInput) continue;
+            w.cls += e.value;
+            const fonts = [...document.fonts].filter((f) => f.status === 'loaded').length;
+            w.shifts.push(`${e.value.toFixed(3)} at ${Math.round(e.startTime)}ms, fonts loaded ${fonts}: ${(e.sources ?? []).map((s) => name(s.node)).join(', ')}`);
+          }
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+      await page.goto(url);
+      await page.evaluate(() => document.fonts.ready);
+      await page.waitForTimeout(1000);
+      const { cls, shifts } = await page.evaluate(() => ({
+        cls: (window as unknown as W).cls,
+        shifts: (window as unknown as W).shifts,
+      }));
+      // The message lists each shift and the elements that moved, so a failure says where to look.
+      expect(cls, `layout shifts:\n${shifts.join('\n')}`).toBeLessThan(0.1);
+    });
+  }
+});
