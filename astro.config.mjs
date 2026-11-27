@@ -7,6 +7,8 @@ export default defineConfig({
   site: 'https://jayveecelestial.com',
   integrations: [sitemap()],
   adapter: vercel(),
+  // Never inline stylesheets either, so the CSP can drop 'unsafe-inline' from style-src.
+  build: { inlineStylesheets: 'never' },
   vite: {
     build: {
       // Never inline scripts into the HTML, so the CSP can drop 'unsafe-inline' from script-src.
