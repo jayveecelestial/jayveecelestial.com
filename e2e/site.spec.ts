@@ -122,6 +122,17 @@ test.describe('plain view and other pages', () => {
     expect(errors).toEqual([]);
   });
 
+  test('falls back to the plain CV when the game script fails to load', async ({ page }) => {
+    // No watchErrors: the blocked script logs a load error on purpose.
+    await page.route('**/_astro/*.js', (r) => r.abort());
+    await page.goto('/?view=play');
+    await expect(page.locator('html')).not.toHaveClass(/\bgame\b/);
+    await expect(page.locator('#stage')).toBeHidden();
+    for (const id of ['about', 'work', 'contact']) {
+      await expect(page.locator(`#${id}`)).toBeVisible();
+    }
+  });
+
   test('unknown pages get the 404 page', async ({ page }) => {
     const res = await page.goto('/no-such-page');
     expect(res?.status()).toBe(404);

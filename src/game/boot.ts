@@ -441,6 +441,8 @@ function boot() {
   sync();
   fromHash();
   if (shouldShowBanner(done, store.get(SEEN_KEY) === "1")) showDone();
+  // Tells public/mode.js the game started; without it, the page falls back to the plain CV on load.
+  document.documentElement.dataset.booted = "";
 }
 
 boot();
