@@ -72,6 +72,8 @@ function boot() {
       ? Math.max(0, (hud?.getBoundingClientRect().bottom ?? 0) - wrap.getBoundingClientRect().top)
       : 0,
   );
+  // createRenderer has sized the canvas; global.css keeps it hidden until now so the HTML-size canvas never paints and then jumps.
+  canvas.dataset.ready = "";
   const blocked = () => panel.open || !!doneDlg?.open || !!titleDlg?.open || (!reduced && !raf);
   const input = createInput(canvas, blocked, renderer.view, !reduced);
   let state = initialState();

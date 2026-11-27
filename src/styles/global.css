@@ -317,6 +317,8 @@ html.game main {
 }
 html.game .site-footer { display: none; }
 html.game #sections { display: none; }
+/* Hidden until boot.ts sizes it: showing the 384x216 HTML size first, then resizing, is a layout shift. */
+html.game #stage:not([data-ready]) { visibility: hidden; }
 html.game #stage-wrap {
   grid-row: 1;
   grid-column: 1;

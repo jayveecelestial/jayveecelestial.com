@@ -155,9 +155,23 @@ test.describe('accessibility', () => {
 test.describe('layout stability', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'layout-shift entries are Chromium only');
 
-  for (const url of ['/?view=play', '/?view=plain']) {
-    test(`no big layout shift on load: ${url}`, async ({ page }) => {
+  const cases = [
+    { url: '/?view=play', slowScript: false },
+    { url: '/?view=plain', slowScript: false },
+    // A slow network paints the page before the game script runs; the canvas must not jump when it does.
+    { url: '/?view=play', slowScript: true },
+  ];
+  for (const { url, slowScript } of cases) {
+    test(`no big layout shift on load: ${url}${slowScript ? ' (slow script)' : ''}`, async ({ page }) => {
       await watchErrors(page);
+      if (slowScript) {
+        // Lighthouse's desktop size, where the old jump scored 0.17 (at 1280x720 it stayed under the limit).
+        await page.setViewportSize({ width: 1350, height: 940 });
+        await page.route('**/_astro/*.js', async (route) => {
+          await new Promise((r) => setTimeout(r, 800));
+          await route.continue();
+        });
+      }
       type Shift = { value: number; hadRecentInput: boolean; startTime: number; sources?: { node?: Node | null }[] };
       type W = { cls: number; shifts: string[] };
       await page.addInitScript(() => {
